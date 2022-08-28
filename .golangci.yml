@@ -4,20 +4,19 @@ linters-settings:
 
 linters:
   enable:
-    # - cyclop
-    # - errorlint
-    # - varnamelen
-    # - wrapcheck
+    - asasalint
     - asciicheck
     - bidichk
     - bodyclose
     - containedctx
+    - cyclop
     - decorder
     - dogsled
     - dupl
     - durationcheck
     - errchkjson
     - errname
+    - errorlint
     - execinquery
     - exhaustive
     - exportloopref
@@ -38,8 +37,8 @@ linters:
     - goprintffuncname
     - gosec
     - grouper
-    - ifshort
     - importas
+    - interfacebloat
     - ireturn
     - lll
     - maintidx
@@ -54,8 +53,8 @@ linters:
     - nosprintfhostport
     - prealloc
     - predeclared
-    - predeclared
     - promlinter
+    - reassign
     - revive
     - rowserrcheck
     - sqlclosecheck
@@ -64,6 +63,7 @@ linters:
     - tparallel
     - unconvert
     - unparam
+    - usestdlibvars
     - wastedassign
     - whitespace
 

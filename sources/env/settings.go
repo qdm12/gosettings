@@ -1,4 +1,4 @@
-package envhelpers
+package env
 
 import "github.com/qdm12/gosettings/defaults"
 

@@ -17,7 +17,7 @@ Features:
   - `OverrideWith`: [`github.com/qdm12/gosettings/override`](https://pkg.go.dev/github.com/qdm12/gosettings/override)
   - `Validate`: [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
 - Reading settings from sources:
-  - Environment variables: [`github.com/qdm12/gosettings/sources/envhelpers`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/envhelpers)
+  - Environment variables: [`github.com/qdm12/gosettings/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
 
 ## Philosophy
 

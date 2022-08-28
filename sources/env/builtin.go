@@ -1,4 +1,4 @@
-package envhelpers
+package env
 
 import (
 	"os"
