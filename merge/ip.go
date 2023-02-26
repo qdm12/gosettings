@@ -13,7 +13,7 @@ func IP(existing, other net.IP) (result net.IP) {
 	return result
 }
 
-func IPNetsSlices(a, b []net.IPNet) (result []net.IPNet) {
+func IPNetsSlice(a, b []net.IPNet) (result []net.IPNet) {
 	if a == nil && b == nil {
 		return nil
 	}

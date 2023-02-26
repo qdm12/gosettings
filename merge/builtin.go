@@ -87,7 +87,7 @@ func StringPtr(existing, other *string) (result *string) {
 	return result
 }
 
-func Uint16Slices(a, b []uint16) (result []uint16) {
+func Uint16Slice(a, b []uint16) (result []uint16) {
 	if a == nil && b == nil {
 		return nil
 	}
@@ -111,7 +111,7 @@ func Uint16Slices(a, b []uint16) (result []uint16) {
 	return result
 }
 
-func StringSlices(a, b []string) (result []string) {
+func StringSlice(a, b []string) (result []string) {
 	if a == nil && b == nil {
 		return nil
 	}
