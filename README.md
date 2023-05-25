@@ -91,6 +91,5 @@ You can check [these 10 lines](https://github.com/qdm12/gluetun/blob/a4c80b3045e
 
 ## FAQ
 
-- Why the `github.com/qdm12/gotree` dependency? **It is only used in the [`examples`](examples) directory**.
 - Why the `github.com/qdm12/govalid` dependency? **It is used in the environment variables helpers [`sources/envhelpers`](sources/envhelpers)**.
 - Why is it still Go 1.17 💤?? **Because many linters still don't support Go 1.18**, so several projects are still using Go 1.17.

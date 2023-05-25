@@ -1,11 +1,12 @@
 package settings
 
 import (
+	"fmt"
+
 	"github.com/qdm12/gosettings/copier"
 	"github.com/qdm12/gosettings/defaults"
 	"github.com/qdm12/gosettings/merge"
 	"github.com/qdm12/gosettings/override"
-	"github.com/qdm12/gotree"
 )
 
 type Settings struct {
@@ -34,12 +35,7 @@ func (s *Settings) OverrideWith(other Settings) {
 	s.Enabled = override.Bool(s.Enabled, other.Enabled)
 }
 
-func (s *Settings) ToLinesNode() *gotree.Node {
-	node := gotree.New("Settings:")
-	node.Appendf("Enabled: %t", *s.Enabled)
-	return node
-}
-
 func (s *Settings) String() string {
-	return s.ToLinesNode().String()
+	return fmt.Sprintf(`Settings:
+- Enabled: %t`, *s.Enabled)
 }
