@@ -1,18 +1,7 @@
 //go:build go1.18
 // +build go1.18
 
-package override
-
-import (
-	"golang.org/x/exp/constraints"
-)
-
-// Number represents a number type, it can notably be
-// an integer, a float, and any type aliases of them such
-// as `time.Duration`.
-type Number interface {
-	constraints.Integer | constraints.Float
-}
+package gosettings
 
 // WithNumber returns the other argument if it is not zero,
 // otherwise it returns the existing argument.
@@ -23,12 +12,12 @@ func WithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
 	return other
 }
 
-// WithPointer returns the existing argument if the other argument
+// OverrideWithPointer returns the existing argument if the other argument
 // is nil. Otherwise it returns a new pointer to the copied value
 // of the other argument value, for added mutation safety.
 // For interfaces where the underlying type is not known,
-// use WithInterface instead.
-func WithPointer[T any](existing, other *T) (result *T) {
+// use OverrideWithInterface instead.
+func OverrideWithPointer[T any](existing, other *T) (result *T) {
 	if other == nil {
 		return existing
 	}
@@ -37,33 +26,33 @@ func WithPointer[T any](existing, other *T) (result *T) {
 	return result
 }
 
-// WithInterface returns the other argument if it is not nil,
+// OverrideWithInterface returns the other argument if it is not nil,
 // otherwise it returns the existing argument.
 // Note you should NOT use this function with concrete pointers
 // such as *int, and only use this for interfaces.
 // This function is not type safe nor mutation safe, be careful.
-func WithInterface(existing, other any) (result any) {
+func OverrideWithInterface(existing, other any) (result any) {
 	if other == nil {
 		return existing
 	}
 	return other
 }
 
-// WithString returns the other string argument if it is not empty,
+// OverrideWithString returns the other string argument if it is not empty,
 // otherwise it returns the existing string argument.
-func WithString(existing, other string) (result string) {
+func OverrideWithString(existing, other string) (result string) {
 	if other == "" {
 		return existing
 	}
 	return other
 }
 
-// WithCopiedSlice returns the existing slice argument if the other
+// OverrideWithCopiedSlice returns the existing slice argument if the other
 // slice argument is nil. Otherwise it returns a new slice with the
 // copied values of the other slice argument.
 // Note it is preferrable to use this function for added mutation safety
-// on the result, but one can use WithSlice if performance matters.
-func WithCopiedSlice[T any](existing, other []T) (result []T) {
+// on the result, but one can use OverrideWithSlice if performance matters.
+func OverrideWithCopiedSlice[T any](existing, other []T) (result []T) {
 	if other == nil {
 		return existing
 	}
@@ -72,26 +61,18 @@ func WithCopiedSlice[T any](existing, other []T) (result []T) {
 	return result
 }
 
-// WithSlice returns the other slice argument if it is not nil,
+// OverrideWithSlice returns the other slice argument if it is not nil,
 // otherwise it returns the existing slice argument.
-func WithSlice[T any](existing, other []T) (result []T) {
+func OverrideWithSlice[T any](existing, other []T) (result []T) {
 	if other == nil {
 		return existing
 	}
 	return other
 }
 
-// SelfValidator is an interface for a type that can validate itself.
-// This is notably the case of netip.IP and netip.Prefix, and can be
-// implemented by the user of this library as well.
-type SelfValidator interface {
-	// IsValid returns true if the value is valid, false otherwise.
-	IsValid() bool
-}
-
-// WithValidator returns the existing argument if other is not valid,
+// OverrideWithValidator returns the existing argument if other is not valid,
 // otherwise it returns the other argument.
-func WithValidator(existing, other SelfValidator) ( //nolint:ireturn
+func OverrideWithValidator(existing, other SelfValidator) ( //nolint:ireturn
 	result SelfValidator) {
 	if !other.IsValid() {
 		return existing

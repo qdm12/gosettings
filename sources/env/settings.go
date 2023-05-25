@@ -1,6 +1,8 @@
 package env
 
-import "github.com/qdm12/gosettings/defaults"
+import (
+	"github.com/qdm12/gosettings"
+)
 
 type settings struct {
 	trimLineEndings *bool
@@ -17,7 +19,7 @@ func settingsFromOptions(options []Option) (s settings) {
 }
 
 func (s *settings) setDefaults() {
-	s.trimLineEndings = defaults.Pointer(s.trimLineEndings, true)
-	s.trimSpace = defaults.Pointer(s.trimSpace, true)
-	s.forceLowercase = defaults.Pointer(s.forceLowercase, true)
+	s.trimLineEndings = gosettings.DefaultPointer(s.trimLineEndings, true)
+	s.trimSpace = gosettings.DefaultPointer(s.trimSpace, true)
+	s.forceLowercase = gosettings.DefaultPointer(s.forceLowercase, true)
 }

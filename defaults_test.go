@@ -1,19 +1,17 @@
-package defaults
+package gosettings
 
 import (
 	"net/netip"
 	"testing"
-
-	"github.com/qdm12/gosettings/merge"
 )
 
-func Test_Validator(t *testing.T) {
+func Test_DefaultValidator(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {
-		existing     merge.SelfValidator
-		defaultValue merge.SelfValidator
-		result       merge.SelfValidator
+		existing     SelfValidator
+		defaultValue SelfValidator
+		result       SelfValidator
 	}{
 		"netip.Addr keep existing": {
 			existing:     netip.AddrFrom4([4]byte{1, 2, 3, 4}),
@@ -37,7 +35,7 @@ func Test_Validator(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			result := Validator(testCase.existing, testCase.defaultValue)
+			result := DefaultValidator(testCase.existing, testCase.defaultValue)
 			if result != testCase.result {
 				t.Fatalf("expected %v, got %v", testCase.result, result)
 			}
