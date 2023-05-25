@@ -25,7 +25,7 @@ After having worked with Go and settings from different sources for years, I hav
 
 ### Settings struct
 
-Each component has a settings struct, where the zero value of a field should be **INVALID**.
+Each component has a settings struct, where the zero value of a field should be **meaningless**.
 For example, if the value `0` is allowed for a field, then it must be an `*int` field.
 On the contrary, you could have an `int` field if the zero value `0` is not valid.
 The reasoning behind this is that you want the zero Go value to be considered as 'unset field' so that the field value can be defaulted, merged with or overridden by another settings struct.
