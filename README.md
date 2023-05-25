@@ -13,10 +13,10 @@ go get github.com/qdm12/gosettings
 Features:
 
 - Define settings struct methods:
-  - `Copy`: [`github.com/qdm12/gosettings/copier`](https://pkg.go.dev/github.com/qdm12/gosettings/copier)
-  - `SetDefaults`: [`github.com/qdm12/gosettings/defaults`](https://pkg.go.dev/github.com/qdm12/gosettings/defaults)
-  - `MergeWith`: [`github.com/qdm12/gosettings/merge`](https://pkg.go.dev/github.com/qdm12/gosettings/merge)
-  - `OverrideWith`: [`github.com/qdm12/gosettings/override`](https://pkg.go.dev/github.com/qdm12/gosettings/override)
+  - `Copy`: use `gosettings.CopyPointer` and `gosettings.CopySlice`
+  - `SetDefaults`: `gosettings.Default*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
+  - `MergeWith`: `gosettings.MergeWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
+  - `OverrideWith`: `gosettings.OverrideWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `Validate`: [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
 - Reading settings from sources:
   - Environment variables: [`github.com/qdm12/gosettings/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
