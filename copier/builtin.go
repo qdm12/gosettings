@@ -18,6 +18,15 @@ func Int(original *int) (copied *int) {
 	return copied
 }
 
+func Uint(original *uint) (copied *uint) {
+	if original == nil {
+		return nil
+	}
+	copied = new(uint)
+	*copied = *original
+	return copied
+}
+
 func Uint8(original *uint8) (copied *uint8) {
 	if original == nil {
 		return nil

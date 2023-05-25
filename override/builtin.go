@@ -7,6 +7,13 @@ func Int(existing, other int) (result int) {
 	return other
 }
 
+func Uint(existing, other uint) (result uint) {
+	if other == 0 {
+		return existing
+	}
+	return other
+}
+
 func Float64(existing, other float64) (result float64) {
 	if other == 0 {
 		return existing

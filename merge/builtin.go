@@ -7,6 +7,13 @@ func Int(existing, other int) (result int) {
 	return other
 }
 
+func Uint(existing, other uint) (result uint) {
+	if existing != 0 {
+		return existing
+	}
+	return other
+}
+
 func String(existing, other string) (result string) {
 	if existing != "" {
 		return existing

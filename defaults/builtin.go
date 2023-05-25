@@ -8,6 +8,13 @@ func Int(existing int, defaultValue int) (
 	return defaultValue
 }
 
+func Uint(existing, defaultValue uint) (result uint) {
+	if existing != 0 {
+		return existing
+	}
+	return defaultValue
+}
+
 func String(existing string, defaultValue string) (
 	result string) {
 	if existing != "" {
