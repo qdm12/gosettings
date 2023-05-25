@@ -43,13 +43,13 @@ func DefaultString(existing, defaultValue string) (result string) {
 // Note it is preferrable to use this function for added mutation safety
 // on the result, but one can use DefaultSlice if performance matters.
 func DefaultCopiedSlice[T any](existing, other []T) (result []T) {
-	return MergeWithCopiedSlice(existing, other)
+	return MergeWithSlice(existing, other)
 }
 
 // DefaultSlice returns the existing slice argument if it is not nil,
 // otherwise it returns the defaultValue slice argument.
 func DefaultSlice[T any](existing, defaultValue []T) (result []T) {
-	return MergeWithSlice(existing, defaultValue)
+	return MergeWithSliceRaw(existing, defaultValue)
 }
 
 // DefaultValidator returns the existing argument if it is valid,

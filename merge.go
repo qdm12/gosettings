@@ -47,12 +47,12 @@ func MergeWithString(existing, other string) (result string) {
 	return other
 }
 
-// MergeWithCopiedSlice returns the existing slice argument if is not nil.
+// MergeWithSlice returns the existing slice argument if is not nil.
 // Otherwise it returns a new slice with the copied values of the
 // other slice argument.
 // Note it is preferrable to use this function for added mutation safety
-// on the result, but one can use MergeWithSlice if performance matters.
-func MergeWithCopiedSlice[T any](existing, other []T) (result []T) {
+// on the result, but one can use MergeWithSliceRaw if performance matters.
+func MergeWithSlice[T any](existing, other []T) (result []T) {
 	if existing != nil {
 		return existing
 	}
@@ -61,9 +61,9 @@ func MergeWithCopiedSlice[T any](existing, other []T) (result []T) {
 	return result
 }
 
-// MergeWithSlice returns the existing slice argument if it is not nil,
+// MergeWithSliceRaw returns the existing slice argument if it is not nil,
 // otherwise it returns the other slice argument.
-func MergeWithSlice[T any](existing, other []T) (result []T) {
+func MergeWithSliceRaw[T any](existing, other []T) (result []T) {
 	if existing != nil {
 		return existing
 	}
