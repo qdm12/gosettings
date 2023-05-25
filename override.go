@@ -3,9 +3,9 @@
 
 package gosettings
 
-// WithNumber returns the other argument if it is not zero,
+// OverrideWithNumber returns the other argument if it is not zero,
 // otherwise it returns the existing argument.
-func WithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
+func OverrideWithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
 	if other == 0 {
 		return existing
 	}
