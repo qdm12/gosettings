@@ -31,11 +31,13 @@ func OverrideWithPointer[T any](existing, other *T) (result *T) {
 // Note you should NOT use this function with concrete pointers
 // such as *int, and only use this for interfaces.
 // This function is not type safe nor mutation safe, be careful.
-func OverrideWithInterface(existing, other any) (result any) {
+// If `other` does not implement the interface of `existing`, this will panic.
+func OverrideWithInterface[T any](existing T, other any) ( //nolint:ireturn
+	result T) {
 	if other == nil {
 		return existing
 	}
-	return other
+	return other.(T) //nolint:forcetypeassert
 }
 
 // OverrideWithString returns the other string argument if it is not empty,

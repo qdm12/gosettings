@@ -27,8 +27,14 @@ func DefaultPointer[T any](existing *T, defaultValue T) (result *T) {
 // Note you should NOT use this function with concrete pointers
 // such as *int, and only use this for interfaces.
 // This function is not type safe nor mutation safe, be careful.
-func DefaultInterface(existing, defaultValue any) (result any) {
-	return MergeWithInterface(existing, defaultValue)
+// If `defaultValue` does not implement the interface of `existing`, this will panic.
+func DefaultInterface[T any](existing T, defaultValue any) ( //nolint:ireturn
+	result T) {
+	mergeResult := MergeWithInterface(existing, defaultValue)
+	if mergeResult == nil {
+		return result
+	}
+	return mergeResult.(T) //nolint:forcetypeassert
 }
 
 // DefaultString returns the existing string argument if it is not empty,

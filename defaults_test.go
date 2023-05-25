@@ -5,6 +5,57 @@ import (
 	"testing"
 )
 
+func Test_DefaultInterface(t *testing.T) {
+	t.Parallel()
+
+	t.Run("no_type_assertion_needed", func(t *testing.T) {
+		t.Parallel()
+
+		var existing testInterface
+		existing = DefaultInterface(existing, &testInterfaceImplA{})
+		existing.F() // make use of variable
+	})
+
+	testCases := map[string]struct {
+		existing     any
+		defaultValue any
+		result       any
+	}{
+		"all_untyped_nils": {},
+		"all_typed_nils": {
+			existing:     (testInterface)(nil),
+			defaultValue: (testInterface)(nil),
+			result:       (testInterface)(nil),
+		},
+		"nil_default": {
+			existing: &testInterfaceImplA{},
+			result:   &testInterfaceImplA{},
+		},
+		"no_default": {
+			existing:     &testInterfaceImplA{},
+			defaultValue: &testInterfaceImplB{},
+			result:       &testInterfaceImplA{},
+		},
+		"default": {
+			existing:     (testInterface)(nil),
+			defaultValue: &testInterfaceImplB{},
+			result:       &testInterfaceImplB{},
+		},
+	}
+
+	for name, testCase := range testCases {
+		testCase := testCase
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			result := DefaultInterface(testCase.existing, testCase.defaultValue)
+			if result != testCase.result {
+				t.Errorf("expected %v, got %v", testCase.result, result)
+			}
+		})
+	}
+}
+
 func Test_DefaultValidator(t *testing.T) {
 	t.Parallel()
 

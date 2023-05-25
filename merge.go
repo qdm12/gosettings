@@ -31,9 +31,11 @@ func MergeWithPointer[T any](existing, other *T) (result *T) {
 // Note you should NOT use this function with concrete pointers
 // such as *int, and only use this for interfaces.
 // This function is not type safe nor mutation safe, be careful.
-func MergeWithInterface(existing, other any) (result any) {
+// If `existing` does not implement the interface of `other`, this will panic.
+func MergeWithInterface[T any](existing any, other T) ( //nolint:ireturn
+	result T) {
 	if existing != nil {
-		return existing
+		return existing.(T) //nolint:forcetypeassert
 	}
 	return other
 }
