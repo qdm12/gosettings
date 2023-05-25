@@ -37,18 +37,18 @@ func DefaultString(existing, defaultValue string) (result string) {
 	return MergeWithString(existing, defaultValue)
 }
 
-// DefaultCopiedSlice returns the existing slice argument if is not nil.
+// DefaultSlice returns the existing slice argument if is not nil.
 // Otherwise it returns a new slice with the copied values of the
 // defaultValue slice argument.
 // Note it is preferrable to use this function for added mutation safety
-// on the result, but one can use DefaultSlice if performance matters.
-func DefaultCopiedSlice[T any](existing, other []T) (result []T) {
+// on the result, but one can use DefaultSliceRaw if performance matters.
+func DefaultSlice[T any](existing, other []T) (result []T) {
 	return MergeWithSlice(existing, other)
 }
 
-// DefaultSlice returns the existing slice argument if it is not nil,
+// DefaultSliceRaw returns the existing slice argument if it is not nil,
 // otherwise it returns the defaultValue slice argument.
-func DefaultSlice[T any](existing, defaultValue []T) (result []T) {
+func DefaultSliceRaw[T any](existing, defaultValue []T) (result []T) {
 	return MergeWithSliceRaw(existing, defaultValue)
 }
 
