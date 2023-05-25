@@ -47,12 +47,12 @@ func OverrideWithString(existing, other string) (result string) {
 	return other
 }
 
-// OverrideWithCopiedSlice returns the existing slice argument if the other
+// OverrideWithSlice returns the existing slice argument if the other
 // slice argument is nil. Otherwise it returns a new slice with the
 // copied values of the other slice argument.
 // Note it is preferrable to use this function for added mutation safety
-// on the result, but one can use OverrideWithSlice if performance matters.
-func OverrideWithCopiedSlice[T any](existing, other []T) (result []T) {
+// on the result, but one can use OverrideWithSliceRaw if performance matters.
+func OverrideWithSlice[T any](existing, other []T) (result []T) {
 	if other == nil {
 		return existing
 	}
@@ -61,9 +61,9 @@ func OverrideWithCopiedSlice[T any](existing, other []T) (result []T) {
 	return result
 }
 
-// OverrideWithSlice returns the other slice argument if it is not nil,
+// OverrideWithSliceRaw returns the other slice argument if it is not nil,
 // otherwise it returns the existing slice argument.
-func OverrideWithSlice[T any](existing, other []T) (result []T) {
+func OverrideWithSliceRaw[T any](existing, other []T) (result []T) {
 	if other == nil {
 		return existing
 	}
