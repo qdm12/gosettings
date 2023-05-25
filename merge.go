@@ -18,7 +18,7 @@ func MergeWithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
 // For interfaces where the underlying type is not known,
 // use MergeWithInterface instead.
 func MergeWithPointer[T any](existing, other *T) (result *T) {
-	if existing != nil {
+	if existing != nil || other == nil {
 		return existing
 	}
 	result = new(T)
