@@ -54,7 +54,7 @@ func DefaultSliceRaw[T any](existing, defaultValue []T) (result []T) {
 
 // DefaultValidator returns the existing argument if it is valid,
 // otherwise it returns the defaultValue argument.
-func DefaultValidator(existing, defaultValue SelfValidator) ( //nolint:ireturn
-	result SelfValidator) {
+func DefaultValidator[T SelfValidator](existing, defaultValue T) ( //nolint:ireturn
+	result T) {
 	return MergeWithValidator(existing, defaultValue)
 }

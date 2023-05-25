@@ -72,8 +72,8 @@ func MergeWithSliceRaw[T any](existing, other []T) (result []T) {
 
 // MergeWithValidator returns the existing argument if it is valid,
 // otherwise it returns the defaultValue argument.
-func MergeWithValidator(existing, defaultValue SelfValidator) ( //nolint:ireturn
-	result SelfValidator) {
+func MergeWithValidator[T SelfValidator](existing, defaultValue T) ( //nolint:ireturn
+	result T) {
 	if existing.IsValid() {
 		return existing
 	}

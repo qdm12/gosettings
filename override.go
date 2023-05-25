@@ -72,8 +72,8 @@ func OverrideWithSliceRaw[T any](existing, other []T) (result []T) {
 
 // OverrideWithValidator returns the existing argument if other is not valid,
 // otherwise it returns the other argument.
-func OverrideWithValidator(existing, other SelfValidator) ( //nolint:ireturn
-	result SelfValidator) {
+func OverrideWithValidator[T SelfValidator](existing, other T) ( //nolint:ireturn
+	result T) {
 	if !other.IsValid() {
 		return existing
 	}
