@@ -14,7 +14,7 @@ type Settings struct {
 }
 
 func (s *Settings) SetDefaults() {
-	s.Enabled = defaults.Bool(s.Enabled, true)
+	s.Enabled = defaults.Pointer(s.Enabled, true)
 }
 
 func (s *Settings) Validate() error {
@@ -23,16 +23,16 @@ func (s *Settings) Validate() error {
 
 func (s *Settings) Copy() Settings {
 	return Settings{
-		Enabled: copier.Bool(s.Enabled),
+		Enabled: copier.Pointer(s.Enabled),
 	}
 }
 
 func (s *Settings) MergeWith(other Settings) {
-	s.Enabled = merge.Bool(s.Enabled, other.Enabled)
+	s.Enabled = merge.WithPointer(s.Enabled, other.Enabled)
 }
 
 func (s *Settings) OverrideWith(other Settings) {
-	s.Enabled = override.Bool(s.Enabled, other.Enabled)
+	s.Enabled = override.WithPointer(s.Enabled, other.Enabled)
 }
 
 func (s *Settings) String() string {

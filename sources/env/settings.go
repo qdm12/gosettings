@@ -17,7 +17,7 @@ func settingsFromOptions(options []Option) (s settings) {
 }
 
 func (s *settings) setDefaults() {
-	s.trimLineEndings = defaults.Bool(s.trimLineEndings, true)
-	s.trimSpace = defaults.Bool(s.trimSpace, true)
-	s.forceLowercase = defaults.Bool(s.forceLowercase, true)
+	s.trimLineEndings = defaults.Pointer(s.trimLineEndings, true)
+	s.trimSpace = defaults.Pointer(s.trimSpace, true)
+	s.forceLowercase = defaults.Pointer(s.forceLowercase, true)
 }

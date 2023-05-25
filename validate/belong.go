@@ -1,3 +1,6 @@
+//go:build go1.18
+// +build go1.18
+
 package validate
 
 import (
@@ -7,13 +10,13 @@ import (
 
 var ErrValueNotOneOf = errors.New("value is not one of the possible values")
 
-func IsOneOf(value string, possibilities ...string) (err error) {
+func IsOneOf[T comparable](value T, possibilities ...T) (err error) {
 	for _, possibility := range possibilities {
 		if value == possibility {
 			return nil
 		}
 	}
 
-	return fmt.Errorf("%w: %q must be one of %s",
+	return fmt.Errorf("%w: %v must be one of %s",
 		ErrValueNotOneOf, value, orStrings(possibilities))
 }

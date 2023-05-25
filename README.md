@@ -8,6 +8,8 @@ Add it to your Go project with:
 go get github.com/qdm12/gosettings
 ```
 
+⚠️ Only compatible with Go 1.18+ since it now uses generics.
+
 Features:
 
 - Define settings struct methods:
