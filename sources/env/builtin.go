@@ -69,14 +69,11 @@ func StringPtr(envKey string, options ...Option) (stringPtr *string) {
 
 func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
-		return nil, nil //nolint:nilnil
-	}
 	value, err := binary.Validate(s)
 	if err != nil {
 		return nil, err
 	}
-	return &value, nil
+	return value, nil
 }
 
 func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
