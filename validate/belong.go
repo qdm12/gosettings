@@ -49,3 +49,30 @@ func AreAllOneOf[T comparable](values, choices []T) (err error) {
 
 	return nil
 }
+
+func AreAllOneOfCaseInsensitive(values, choices []string) (err error) {
+	if len(values) > 0 && len(choices) == 0 {
+		return fmt.Errorf("%w", ErrNoChoice)
+	}
+
+	set := make(map[string]struct{}, len(choices))
+	for _, choice := range choices {
+		lowercaseChoice := strings.ToLower(choice)
+		set[lowercaseChoice] = struct{}{}
+	}
+
+	for _, value := range values {
+		lowercaseValue := strings.ToLower(value)
+		_, ok := set[lowercaseValue]
+		if !ok {
+			choiceStrings := make([]string, len(choices))
+			for i := range choices {
+				choiceStrings[i] = fmt.Sprintf("%v", choices[i])
+			}
+			return fmt.Errorf("%w: value %v, choices available are %s",
+				ErrValueNotOneOf, value, strings.Join(choiceStrings, ", "))
+		}
+	}
+
+	return nil
+}
