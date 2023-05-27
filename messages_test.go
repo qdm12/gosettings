@@ -4,6 +4,38 @@ import (
 	"testing"
 )
 
+func Test_BoolToYesNo(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		b *bool
+		s string
+	}{
+		"nil": {},
+		"false": {
+			b: ptrTo(false),
+			s: "no",
+		},
+		"true": {
+			b: ptrTo(true),
+			s: "yes",
+		},
+	}
+
+	for name, testCase := range testCases {
+		testCase := testCase
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			s := BoolToYesNo(testCase.b)
+
+			if s != testCase.s {
+				t.Errorf("expected %s, got %s", testCase.s, s)
+			}
+		})
+	}
+}
+
 func Test_ObfuscateKey(t *testing.T) {
 	t.Parallel()
 

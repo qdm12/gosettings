@@ -1,5 +1,7 @@
 package gosettings
 
+func ptrTo[T any](t T) *T { return &t }
+
 type testInterface interface {
 	F()
 }

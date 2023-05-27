@@ -4,6 +4,20 @@ import (
 	"math"
 )
 
+// BoolToYesNo returns "yes" if the given boolean is true,
+// "no" if the given boolean is false, and an empty string
+// if the given boolean pointer is nil.
+func BoolToYesNo(b *bool) string {
+	switch {
+	case b == nil:
+		return ""
+	case *b:
+		return "yes"
+	default:
+		return "no"
+	}
+}
+
 // ObfuscateKey returns an obfuscated key for logging purposes.
 // If the key is empty, `[not set]` is returned.
 // If the key has up to 128 bits of security with 2 characters removed,
