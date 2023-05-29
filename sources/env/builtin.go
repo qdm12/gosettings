@@ -33,6 +33,9 @@ func Get(envKey string, options ...Option) (value string) {
 		for strings.HasSuffix(value, "\n") {
 			value = strings.TrimSuffix(value, "\r\n")
 			value = strings.TrimSuffix(value, "\n")
+			if *settings.trimSpace {
+				value = strings.TrimSpace(value)
+			}
 		}
 	}
 
