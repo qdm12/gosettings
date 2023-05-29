@@ -22,6 +22,17 @@ func DefaultPointer[T any](existing *T, defaultValue T) (result *T) {
 	return result
 }
 
+// DefaultPointerRaw returns the existing argument if it is not nil.
+// Otherwise it returns the defaultValue pointer argument.
+// For interfaces where the underlying type is not known,
+// use DefaultInterface instead.
+func DefaultPointerRaw[T any](existing, defaultValue *T) (result *T) {
+	if existing != nil {
+		return existing
+	}
+	return defaultValue
+}
+
 // DefaultInterface returns the existing argument if it is not nil,
 // otherwise it returns the defaultValue argument.
 // Note you should NOT use this function with concrete pointers
