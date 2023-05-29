@@ -48,6 +48,15 @@ func Test_postProcessValue(t *testing.T) {
 			},
 			result: "value",
 		},
+		"trim_spaces_and_line_endings": {
+			value: "\tValue\t\n\t\r\n\t",
+			settings: settings{
+				trimLineEndings: ptrTo(true),
+				trimSpace:       ptrTo(true),
+				forceLowercase:  ptrTo(false),
+			},
+			result: "Value",
+		},
 	}
 
 	for name, testCase := range testCases {

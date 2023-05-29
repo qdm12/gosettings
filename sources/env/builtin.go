@@ -29,21 +29,26 @@ func postProcessValue(value string, settings settings) string {
 		value = strings.ToLower(value)
 	}
 
+	cutSet := map[string]struct{}{}
 	if *settings.trimSpace {
-		value = strings.TrimSpace(value)
-	}
-
-	if *settings.trimLineEndings {
-		for strings.HasSuffix(value, "\n") {
-			value = strings.TrimSuffix(value, "\r\n")
-			value = strings.TrimSuffix(value, "\n")
-			if *settings.trimSpace {
-				value = strings.TrimSpace(value)
-			}
+		// Only latin charset
+		spaceCharacters := []rune{'\t', '\n', '\v', '\f', '\r', ' ', 0x85, 0xA0}
+		for _, r := range spaceCharacters {
+			cutSet[string(r)] = struct{}{}
 		}
 	}
 
-	return value
+	if *settings.trimLineEndings {
+		cutSet["\r"] = struct{}{}
+		cutSet["\n"] = struct{}{}
+	}
+
+	cutSetString := ""
+	for s := range cutSet {
+		cutSetString += s
+	}
+
+	return strings.Trim(value, cutSetString)
 }
 
 func CSV(envKey string, options ...Option) (values []string) {
