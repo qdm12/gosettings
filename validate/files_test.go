@@ -79,3 +79,65 @@ func Test_FileExists(t *testing.T) {
 		})
 	}
 }
+
+func Test_DirectoryExists(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		setupDirectory func(t *testing.T) (filePath string)
+		errWrapped     error
+		errRegex       *regexp.Regexp
+	}{
+		"empty_path": {
+			setupDirectory: func(t *testing.T) (filePath string) {
+				t.Helper()
+				return ""
+			},
+		},
+		"directory": {
+			setupDirectory: func(t *testing.T) (filePath string) {
+				t.Helper()
+				path := filepath.Join(t.TempDir(), "directory")
+				err := os.MkdirAll(path, os.ModePerm)
+				if err != nil {
+					t.Fatal(err)
+				}
+				return path
+			},
+		},
+		"file_not_exists": {
+			setupDirectory: func(t *testing.T) (filePath string) {
+				t.Helper()
+				return filepath.Join(t.TempDir(), "file.txt")
+			},
+			errWrapped: ErrFileDoesNotExist,
+			errRegex:   regexp.MustCompile("file does not exist: /[a-zA-Z0-9_./]+/file.txt"),
+		},
+		"directory_exists": {
+			setupDirectory: func(t *testing.T) (filePath string) {
+				t.Helper()
+				return t.TempDir()
+			},
+		},
+	}
+
+	for name, testCase := range testCases {
+		testCase := testCase
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			filePath := testCase.setupDirectory(t)
+
+			err := DirectoryExists(filePath)
+
+			if !errors.Is(err, testCase.errWrapped) {
+				t.Errorf("expected error '%v' to be wrapped, but it is not in '%v'", testCase.errWrapped, err)
+			}
+			if testCase.errWrapped != nil &&
+				!testCase.errRegex.MatchString(fmt.Sprint(err)) {
+				t.Errorf("expected error message '%v' to match regex %s",
+					err, testCase.errRegex)
+			}
+		})
+	}
+}

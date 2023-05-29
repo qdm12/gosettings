@@ -9,34 +9,35 @@ import (
 
 var (
 	ErrFileDoesNotExist = errors.New("file does not exist")
-	ErrFileOpen         = errors.New("failed opening file")
 	ErrFileStat         = errors.New("failed stating file")
 	ErrFilePathIsDir    = errors.New("filepath is a directory")
-	ErrFileClose        = errors.New("failed closing file")
+	ErrFilepathIsFile   = errors.New("filepath is a file")
 )
 
 func FileExists(path string) (err error) {
+	const directory = false
+	return fileExists(path, directory)
+}
+
+func DirectoryExists(path string) (err error) {
+	const directory = true
+	return fileExists(path, directory)
+}
+
+func fileExists(path string, directory bool) (err error) {
 	path = filepath.Clean(path)
 
-	f, err := os.Open(path)
+	stat, err := os.Stat(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("%w: %s", ErrFileDoesNotExist, path)
 	} else if err != nil {
-		return fmt.Errorf("%w: %w", ErrFileOpen, err)
-	}
-
-	stat, err := f.Stat()
-	if err != nil {
 		return fmt.Errorf("%w: %w", ErrFileStat, err)
 	}
 
-	if stat.IsDir() {
+	if directory && !stat.IsDir() {
+		return fmt.Errorf("%w: %s", ErrFilepathIsFile, path)
+	} else if !directory && stat.IsDir() {
 		return fmt.Errorf("%w: %s", ErrFilePathIsDir, path)
-	}
-
-	err = f.Close()
-	if err != nil {
-		return fmt.Errorf("%w: %w", ErrFileClose, err)
 	}
 
 	return nil
