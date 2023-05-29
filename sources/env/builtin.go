@@ -11,6 +11,11 @@ import (
 
 // Get returns an environment variable value modified
 // depending on the options given.
+// By default, and unless an option specifies otherwise,
+// the following options are applied on the value string:
+// - Trim line endings.
+// - Trim spaces.
+// - Force lowercase.
 func Get(envKey string, options ...Option) (value string) {
 	settings := settingsFromOptions(options)
 
