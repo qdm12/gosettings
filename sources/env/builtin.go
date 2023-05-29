@@ -13,7 +13,7 @@ import (
 // depending on the options given.
 // By default, and unless an option specifies otherwise,
 // the following options are applied on the value string:
-// - Trim line endings.
+// - Trim line endings suffixes \r\n and \n.
 // - Trim spaces.
 // - Force lowercase.
 func Get(envKey string, options ...Option) (value string) {
@@ -21,6 +21,10 @@ func Get(envKey string, options ...Option) (value string) {
 
 	value = os.Getenv(envKey)
 
+	return postProcessValue(value, settings)
+}
+
+func postProcessValue(value string, settings settings) string {
 	if *settings.forceLowercase {
 		value = strings.ToLower(value)
 	}
