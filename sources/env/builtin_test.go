@@ -17,6 +17,7 @@ func Test_postProcessValue(t *testing.T) {
 			settings: settings{
 				trimLineEndings: ptrTo(false),
 				trimSpace:       ptrTo(false),
+				trimQuotes:      ptrTo(false),
 				forceLowercase:  ptrTo(false),
 			},
 			result: " Value\n ",
@@ -26,6 +27,7 @@ func Test_postProcessValue(t *testing.T) {
 			settings: settings{
 				trimLineEndings: ptrTo(true),
 				trimSpace:       ptrTo(false),
+				trimQuotes:      ptrTo(false),
 				forceLowercase:  ptrTo(false),
 			},
 			result: " Value",
@@ -35,6 +37,27 @@ func Test_postProcessValue(t *testing.T) {
 			settings: settings{
 				trimLineEndings: ptrTo(false),
 				trimSpace:       ptrTo(true),
+				trimQuotes:      ptrTo(false),
+				forceLowercase:  ptrTo(false),
+			},
+			result: "Value",
+		},
+		"trim_single_quotes": {
+			value: "'Value'",
+			settings: settings{
+				trimLineEndings: ptrTo(false),
+				trimSpace:       ptrTo(false),
+				trimQuotes:      ptrTo(true),
+				forceLowercase:  ptrTo(false),
+			},
+			result: "Value",
+		},
+		"trim_double_quotes": {
+			value: "\"Value\"",
+			settings: settings{
+				trimLineEndings: ptrTo(false),
+				trimSpace:       ptrTo(false),
+				trimQuotes:      ptrTo(true),
 				forceLowercase:  ptrTo(false),
 			},
 			result: "Value",
@@ -44,18 +67,20 @@ func Test_postProcessValue(t *testing.T) {
 			settings: settings{
 				trimLineEndings: ptrTo(false),
 				trimSpace:       ptrTo(false),
+				trimQuotes:      ptrTo(false),
 				forceLowercase:  ptrTo(true),
 			},
 			result: "value",
 		},
-		"trim_spaces_and_line_endings": {
-			value: "\tValue\t\n\t\r\n\t",
+		"combined": {
+			value: "\t\"'Value\"'\t\n\t\r\n\t",
 			settings: settings{
 				trimLineEndings: ptrTo(true),
 				trimSpace:       ptrTo(true),
-				forceLowercase:  ptrTo(false),
+				trimQuotes:      ptrTo(true),
+				forceLowercase:  ptrTo(true),
 			},
-			result: "Value",
+			result: "value",
 		},
 	}
 

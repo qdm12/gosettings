@@ -15,6 +15,7 @@ import (
 // the following options are applied on the value string:
 // - Trim line endings suffixes \r\n and \n.
 // - Trim spaces.
+// - Trim quotes.
 // - Force lowercase.
 func Get(envKey string, options ...Option) (value string) {
 	settings := settingsFromOptions(options)
@@ -41,6 +42,11 @@ func postProcessValue(value string, settings settings) string {
 	if *settings.trimLineEndings {
 		cutSet["\r"] = struct{}{}
 		cutSet["\n"] = struct{}{}
+	}
+
+	if *settings.trimQuotes {
+		cutSet[`"`] = struct{}{}
+		cutSet[`'`] = struct{}{}
 	}
 
 	cutSetString := ""
