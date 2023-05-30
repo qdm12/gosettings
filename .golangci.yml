@@ -1,6 +1,19 @@
 linters-settings:
   misspell:
     locale: US
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - disableStutteringCheck
+
+issues:
+  include:
+    - EXC0012
+  exclude-rules:
+    - text: "exported: exported var Err*"
+      linters:
+        - revive
 
 linters:
   enable:
