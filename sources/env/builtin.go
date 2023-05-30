@@ -10,20 +10,30 @@ import (
 	"github.com/qdm12/govalid/integer"
 )
 
-// Get returns an environment variable value modified
-// depending on the options given.
+// Get returns an environment variable value as a string pointer.
+// The pointer is returned as `nil` if the environment variable key
+// given is NOT set. By default and unless changed by the AllowEmpty
+// option, if the environment variable is set but its value is empty,
+// the pointer is returned as `nil`.
+// Otherwise, the value string is then modified depending on the
+// defaults settings and options given, and returned as a pointer.
 // By default, and unless an option specifies otherwise,
 // the following options are applied on the value string:
 // - Trim line endings suffixes \r\n and \n.
 // - Trim spaces.
 // - Trim quotes.
 // - Force lowercase.
-func Get(envKey string, options ...Option) (value string) {
+func Get(envKey string, options ...Option) (value *string) {
 	settings := settingsFromOptions(options)
 
-	value = os.Getenv(envKey)
+	envValue, isSet := os.LookupEnv(envKey)
+	if !isSet || (!*settings.acceptEmpty && envValue == "") {
+		return nil
+	}
 
-	return postProcessValue(value, settings)
+	value = new(string)
+	*value = postProcessValue(envValue, settings)
+	return value
 }
 
 func postProcessValue(value string, settings settings) string {
@@ -59,28 +69,35 @@ func postProcessValue(value string, settings settings) string {
 }
 
 // CSV returns a slice of strings from a comma separated
-// environment variable value. If the value is the empty
-// string, `nil` is returned.
+// environment variable value.
+// If the environment variable is not set, `nil` is returned.
+// By default and unless specified by an option, if the
+// environment variable is set but its value is empty, `nil`
+// is returned.
+// Otherwise, the value is split by commas and returned as a
+// slice of strings.
 func CSV(envKey string, options ...Option) (values []string) {
 	csv := Get(envKey, options...)
-	if csv == "" {
+	if csv == nil {
 		return nil
 	}
-	return strings.Split(csv, ",")
+	return strings.Split(*csv, ",")
 }
 
 // Int returns an `int` from an environment variable value.
-// If the value is the empty string, `0` is returned.
+// If the environment variable is not set or its value is
+// the empty string, `0` is returned.
 // Otherwise, if the value is not a valid integer string, an
 // error is returned with the environment variable name in the
 // error context.
 func Int(envKey string, options ...Option) (n int, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
 		return 0, nil
 	}
 
-	n, err = strconv.Atoi(s)
+	n, err = strconv.Atoi(*s)
 	if err != nil {
 		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -89,17 +106,19 @@ func Int(envKey string, options ...Option) (n int, err error) {
 }
 
 // Float64 returns a `float64` from an environment variable value.
-// If the value is the empty string, `0` is returned.
+// If the environment variable is not set or its value is
+// the empty string, `0` is returned.
 // Otherwise, if the value is not a valid float64 string, an error is
 // returned with the environment variable name in the error context.
 func Float64(envKey string, options ...Option) (f float64, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
 		return 0, nil
 	}
 
 	const bits = 64
-	f, err = strconv.ParseFloat(s, bits)
+	f, err = strconv.ParseFloat(*s, bits)
 	if err != nil {
 		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -107,25 +126,21 @@ func Float64(envKey string, options ...Option) (f float64, err error) {
 	return f, nil
 }
 
-// StringPtr returns a pointer to a `string` from an environment variable value.
-// If the value is the empty string, `nil` is returned.
-func StringPtr(envKey string, options ...Option) (stringPtr *string) {
-	s := Get(envKey, options...)
-	if s == "" {
-		return nil
-	}
-	return &s
-}
-
 // BoolPtr returns a pointer to a `bool` from an environment variable value.
 // 'true' string values are: "enabled", "yes", "on".
 // 'false' string values are: "disabled", "no", "off".
-// If the value is the empty string, `nil` is returned.
+// If the environment variable is not set or its value is the empty string,
+// `nil` is returned.
 // Otherwise, if the value is not one of the above, an error is returned
 // with the environment variable name in the error context.
 func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	s := Get(envKey, options...)
-	value, err := binary.Validate(s)
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
+		return nil, nil //nolint:nilnil
+	}
+
+	value, err := binary.Validate(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -133,15 +148,17 @@ func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.
-// If the value is the empty string, `nil` is returned.
+// If the environment variable is not set or its value is the empty string,
+// `nil` is returned.
 // Otherwise, if the value is not a valid integer string, an error is returned
 // with the environment variable name in the error context.
 func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
 	}
-	value, err := strconv.Atoi(s)
+	value, err := strconv.Atoi(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -149,17 +166,19 @@ func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 }
 
 // Uint8Ptr returns a pointer to an `uint8` from an environment variable value.
-// If the value is the empty string, `nil` is returned.
+// If the environment variable is not set or its value is the empty string,
+// `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 255,
 // an error is returned with the environment variable name in the error context.
 func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
 	}
 
 	const min, max = 0, 255
-	value, err := integer.Validate(s, integer.OptionRange(min, max))
+	value, err := integer.Validate(*s, integer.OptionRange(min, max))
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -170,18 +189,20 @@ func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 }
 
 // Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
-// If the value is the empty string, `nil` is returned.
+// If the environment variable is not set or its value is the empty string,
+// `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 65535,
 // an error is returned with the environment variable name in the error context.
 func Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
 	s := Get(envKey, options...)
-	if s == "" {
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
 	}
 
 	const min, max = 0, 65535
-	value, err := integer.Validate(s, integer.OptionRange(min, max))
+	value, err := integer.Validate(*s, integer.OptionRange(min, max))
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}

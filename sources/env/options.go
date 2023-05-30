@@ -12,3 +12,11 @@ func ForceLowercase(lowercase bool) Option {
 		s.forceLowercase = &lowercase
 	}
 }
+
+// AcceptEmpty allows to have set but empty environment
+// variables.
+func AcceptEmpty(accept bool) Option {
+	return func(s *settings) {
+		s.acceptEmpty = &accept
+	}
+}

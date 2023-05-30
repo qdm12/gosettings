@@ -9,6 +9,7 @@ type settings struct {
 	trimSpace       *bool
 	trimQuotes      *bool
 	forceLowercase  *bool
+	acceptEmpty     *bool
 }
 
 func settingsFromOptions(options []Option) (s settings) {
@@ -24,4 +25,5 @@ func (s *settings) setDefaults() {
 	s.trimSpace = gosettings.DefaultPointer(s.trimSpace, true)
 	s.trimQuotes = gosettings.DefaultPointer(s.trimQuotes, true)
 	s.forceLowercase = gosettings.DefaultPointer(s.forceLowercase, true)
+	s.acceptEmpty = gosettings.DefaultPointer(s.acceptEmpty, false)
 }
