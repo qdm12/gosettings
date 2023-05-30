@@ -1,6 +1,7 @@
 package env
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -71,25 +72,39 @@ func CSV(envKey string, options ...Option) (values []string) {
 // Int returns an `int` from an environment variable value.
 // If the value is the empty string, `0` is returned.
 // Otherwise, if the value is not a valid integer string, an
-// error is returned.
+// error is returned with the environment variable name in the
+// error context.
 func Int(envKey string, options ...Option) (n int, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
 		return 0, nil
 	}
-	return strconv.Atoi(s)
+
+	n, err = strconv.Atoi(s)
+	if err != nil {
+		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
+	}
+
+	return n, nil
 }
 
 // Float64 returns a `float64` from an environment variable value.
 // If the value is the empty string, `0` is returned.
-// Otherwise, if the value is not a valid float64 string, an error is returned.
+// Otherwise, if the value is not a valid float64 string, an error is
+// returned with the environment variable name in the error context.
 func Float64(envKey string, options ...Option) (f float64, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
 		return 0, nil
 	}
+
 	const bits = 64
-	return strconv.ParseFloat(s, bits)
+	f, err = strconv.ParseFloat(s, bits)
+	if err != nil {
+		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
+	}
+
+	return f, nil
 }
 
 // StringPtr returns a pointer to a `string` from an environment variable value.
@@ -106,19 +121,21 @@ func StringPtr(envKey string, options ...Option) (stringPtr *string) {
 // 'true' string values are: "enabled", "yes", "on".
 // 'false' string values are: "disabled", "no", "off".
 // If the value is the empty string, `nil` is returned.
-// Otherwise, if the value is not one of the above, an error is returned.
+// Otherwise, if the value is not one of the above, an error is returned
+// with the environment variable name in the error context.
 func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	s := Get(envKey, options...)
 	value, err := binary.Validate(s)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 	return value, nil
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.
 // If the value is the empty string, `nil` is returned.
-// Otherwise, if the value is not a valid integer string, an error is returned.
+// Otherwise, if the value is not a valid integer string, an error is returned
+// with the environment variable name in the error context.
 func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -126,7 +143,7 @@ func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	}
 	value, err := strconv.Atoi(s)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 	return &value, nil
 }
@@ -134,7 +151,7 @@ func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 // Uint8Ptr returns a pointer to an `uint8` from an environment variable value.
 // If the value is the empty string, `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 255,
-// an error is returned.
+// an error is returned with the environment variable name in the error context.
 func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -144,7 +161,7 @@ func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	const min, max = 0, 255
 	value, err := integer.Validate(s, integer.OptionRange(min, max))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 
 	uint8Ptr = new(uint8)
@@ -155,7 +172,7 @@ func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 // Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
 // If the value is the empty string, `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 65535,
-// an error is returned.
+// an error is returned with the environment variable name in the error context.
 func Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
 	s := Get(envKey, options...)
@@ -166,7 +183,7 @@ func Uint16Ptr(envKey string, options ...Option) (
 	const min, max = 0, 65535
 	value, err := integer.Validate(s, integer.OptionRange(min, max))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 
 	uint16Ptr = new(uint16)
