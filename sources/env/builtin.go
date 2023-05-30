@@ -57,6 +57,9 @@ func postProcessValue(value string, settings settings) string {
 	return strings.Trim(value, cutSetString)
 }
 
+// CSV returns a slice of strings from a comma separated
+// environment variable value. If the value is the empty
+// string, `nil` is returned.
 func CSV(envKey string, options ...Option) (values []string) {
 	csv := Get(envKey, options...)
 	if csv == "" {
@@ -65,6 +68,10 @@ func CSV(envKey string, options ...Option) (values []string) {
 	return strings.Split(csv, ",")
 }
 
+// Int returns an `int` from an environment variable value.
+// If the value is the empty string, `0` is returned.
+// Otherwise, if the value is not a valid integer string, an
+// error is returned.
 func Int(envKey string, options ...Option) (n int, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -73,6 +80,9 @@ func Int(envKey string, options ...Option) (n int, err error) {
 	return strconv.Atoi(s)
 }
 
+// Float64 returns a `float64` from an environment variable value.
+// If the value is the empty string, `0` is returned.
+// Otherwise, if the value is not a valid float64 string, an error is returned.
 func Float64(envKey string, options ...Option) (f float64, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -82,6 +92,8 @@ func Float64(envKey string, options ...Option) (f float64, err error) {
 	return strconv.ParseFloat(s, bits)
 }
 
+// StringPtr returns a pointer to a `string` from an environment variable value.
+// If the value is the empty string, `nil` is returned.
 func StringPtr(envKey string, options ...Option) (stringPtr *string) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -90,6 +102,11 @@ func StringPtr(envKey string, options ...Option) (stringPtr *string) {
 	return &s
 }
 
+// BoolPtr returns a pointer to a `bool` from an environment variable value.
+// 'true' string values are: "enabled", "yes", "on".
+// 'false' string values are: "disabled", "no", "off".
+// If the value is the empty string, `nil` is returned.
+// Otherwise, if the value is not one of the above, an error is returned.
 func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	s := Get(envKey, options...)
 	value, err := binary.Validate(s)
@@ -99,6 +116,9 @@ func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	return value, nil
 }
 
+// IntPtr returns a pointer to an `int` from an environment variable value.
+// If the value is the empty string, `nil` is returned.
+// Otherwise, if the value is not a valid integer string, an error is returned.
 func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -111,6 +131,10 @@ func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	return &value, nil
 }
 
+// Uint8Ptr returns a pointer to an `uint8` from an environment variable value.
+// If the value is the empty string, `nil` is returned.
+// Otherwise, if the value is not a valid integer string between 0 and 255,
+// an error is returned.
 func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	s := Get(envKey, options...)
 	if s == "" {
@@ -128,6 +152,10 @@ func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	return uint8Ptr, nil
 }
 
+// Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
+// If the value is the empty string, `nil` is returned.
+// Otherwise, if the value is not a valid integer string between 0 and 65535,
+// an error is returned.
 func Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
 	s := Get(envKey, options...)
