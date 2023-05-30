@@ -28,6 +28,7 @@ func (s *SourceA) String() string {
 
 func (s *SourceA) Read() (settings settings.Settings, err error) {
 	settings.Enabled = nil // no setting found
+	settings.Names = []string{"Charlie"}
 	return settings, err
 }
 
@@ -41,5 +42,6 @@ func (s *SourceB) String() string {
 func (f *SourceB) Read() (settings settings.Settings, err error) {
 	enabled := false
 	settings.Enabled = &enabled // found enabled as false
+	settings.Names = nil        // no setting found
 	return settings, nil
 }
