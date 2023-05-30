@@ -94,6 +94,7 @@ More concrete settings implementation examples using this library are notably:
 
 - [Gluetun](https://github.com/qdm12/gluetun/tree/master/internal/configuration)
 - [qdm12/dns](https://github.com/qdm12/dns/tree/v2.0.0-beta/internal/config)
+- [tinier](https://github.com/qdm12/tinier/tree/main/internal/config)
 
 ### Settings methods usage
 
