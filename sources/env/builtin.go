@@ -68,6 +68,23 @@ func postProcessValue(value string, settings settings) string {
 	return strings.Trim(value, cutSetString)
 }
 
+// String returns a string from an environment variable value.
+// If the environment variable is not set, the empty string is
+// returned.
+// By default, and unless an option specifies otherwise,
+// the following options are applied on the value string:
+// - Trim line endings suffixes \r\n and \n.
+// - Trim spaces.
+// - Trim quotes.
+// - Force lowercase.
+func String(envKey string, options ...Option) (value string) {
+	s := Get(envKey, options...)
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
 // CSV returns a slice of strings from a comma separated
 // environment variable value.
 // If the environment variable is not set, `nil` is returned.
