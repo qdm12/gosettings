@@ -14,11 +14,17 @@ var (
 	ErrFilepathIsFile   = errors.New("filepath is a file")
 )
 
+// FileExists returns a `nil` error if the given `path` exists
+// and is a file. Otherwise, an error is returned, wrapping either
+// `ErrFileDoesNotExist`, `ErrFileStat` or `ErrFilePathIsDir`.
 func FileExists(path string) (err error) {
 	const directory = false
 	return fileExists(path, directory)
 }
 
+// DirectoryExists returns a `nil` error if the given `path` exists
+// and is a directory. Otherwise, an error is returned, wrapping either
+// `ErrFileDoesNotExist`, `ErrFileStat` or `ErrFilepathIsFile`.
 func DirectoryExists(path string) (err error) {
 	const directory = true
 	return fileExists(path, directory)

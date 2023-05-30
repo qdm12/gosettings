@@ -14,6 +14,9 @@ var (
 	ErrValueNotOneOf = errors.New("value is not one of the possible choices")
 )
 
+// IsOneOf returns a `nil` error if the `value` is one of
+// the given `possibilities`. Otherwise, an error is returned,
+// wrapping `ErrValueNotOneOf` and listing the `possibilities`.
 func IsOneOf[T comparable](value T, possibilities ...T) (err error) {
 	for _, possibility := range possibilities {
 		if value == possibility {
@@ -25,6 +28,10 @@ func IsOneOf[T comparable](value T, possibilities ...T) (err error) {
 		ErrValueNotOneOf, value, orStrings(possibilities))
 }
 
+// AreAllOneOf returns a `nil` error if each of the `values`
+// are one of the given `choices`. Otherwise, an error is returned,
+// wrapping `ErrValueNotOneOf`, precising which value did not match
+// and listing the `possibilities`.
 func AreAllOneOf[T comparable](values, choices []T) (err error) {
 	if len(values) > 0 && len(choices) == 0 {
 		return fmt.Errorf("%w", ErrNoChoice)
@@ -50,6 +57,10 @@ func AreAllOneOf[T comparable](values, choices []T) (err error) {
 	return nil
 }
 
+// AreAllOneOfCaseInsensitive returns a `nil` error if each of the `values`
+// are one of the given `choices` in a case insensitive manner. Otherwise,
+// an error is returned, wrapping `ErrValueNotOneOf`, precising which value
+// did not match and listing the `possibilities`.
 func AreAllOneOfCaseInsensitive(values, choices []string) (err error) {
 	if len(values) > 0 && len(choices) == 0 {
 		return fmt.Errorf("%w", ErrNoChoice)
