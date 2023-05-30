@@ -30,10 +30,11 @@ func (s *Settings) Copy() Settings {
 	}
 }
 
-// MergeWith merges the receiver settings with the fields from
-// another settings struct.
-func (s *Settings) MergeWith(other Settings) {
-	s.Enabled = gosettings.MergeWithPointer(s.Enabled, other.Enabled)
+// MergeWith merges the settings with another settings struct
+// and returns the result as a new settings struct.
+func (s Settings) MergeWith(other Settings) (merged Settings) {
+	merged.Enabled = gosettings.MergeWithPointer(s.Enabled, other.Enabled)
+	return merged
 }
 
 // OverrideWith overrides the settings with another settings struct.
@@ -42,7 +43,7 @@ func (s *Settings) OverrideWith(other Settings) {
 }
 
 // String returns a string representation of the settings.
-func (s *Settings) String() string {
+func (s Settings) String() string {
 	return fmt.Sprintf(`Settings:
 - Enabled: %t`, *s.Enabled)
 }

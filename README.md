@@ -62,10 +62,13 @@ type Settings interface {
  // Usage:
  // - Copy settings before modifying them with OverrideWith(), to validate them with Validate() before actually using them.
  Copy() Settings
- // MergeWith sets all the unset fields of the receiver to the values of the given settings.
+ // MergeWith copies the receiver settings as `merged`, and sets all the unset fields
+ // of `merged` to the values of the `other` settings. The receiver should be a VALUE
+ // receiver so that it can be used with the generics-based merger settings source:
+ // https://github.com/qdm12/gosettings/blob/main/sources/merger
  // Usage:
  // - Read from different settings sources with an order of precedence
- MergeWith(other Settings)
+ MergeWith(other Settings) (merged Settings)
  // OverrideWith sets all the set values of the other settings to the fields of the receiver settings.
  // Usage:
  // - Update settings at runtime
@@ -98,9 +101,36 @@ In the following Go examples, we use the [example settings implementation](examp
 
 #### Read settings from multiple sources
 
-🚧 To be completed 🚧
+A quick glimpse on how this works:
 
-You can check [these 10 lines](https://github.com/qdm12/gluetun/blob/a4c80b3045e65afbf86de44c89ad18deca51a43f/internal/configuration/sources/mux/reader.go#L31-L44) from [Gluetun](https://github.com/qdm12/gluetun) for a concrete example.
+```go
+package main
+
+import (
+  "github.com/qdm12/gosettings/sources/merger"
+)
+
+type Settings struct {
+  // ...
+}
+
+// ... and Settings methods
+
+func main() {
+  env := NewEnv()
+  flags := NewFlags()
+  merger := merger.New[Settings](flags, env)
+  settings, err := merger.Read()
+  if err != nil {
+    panic(err)
+  }
+  settings.SetDefaults()
+
+  // ...
+}
+```
+
+See the [runnable example](examples/merger/main.go) which uses the [example settings implementation](examples/settings/settings.go).
 
 #### Updating settings at runtime
 
