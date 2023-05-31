@@ -12,9 +12,9 @@ import (
 // Otherwise, if the value is not a valid duration string,
 // an error is returned with the environment variable name
 // in the error context.
-func DurationPtr(envKey string, options ...Option) (
+func (e *Env) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
-	s := Get(envKey, options...)
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil

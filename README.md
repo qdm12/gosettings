@@ -25,7 +25,7 @@ Features:
   - `OverrideWith`: `gosettings.OverrideWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `Validate`: `validate.*` functions from [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
 - Reading settings from sources:
-  - Environment variables: `env.*` functions from [`github.com/qdm12/gosettings/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
+  - Environment variables: use `env.New(os.Environ())` with its methods, from [`github.com/qdm12/gosettings/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
 - Minor feature notes:
   - No use of `reflect` for performance
   - Near zero dependency

@@ -11,9 +11,9 @@ import (
 // Otherwise, if the value is not a valid ip string,
 // an error is returned with the environment variable name
 // in the error context.
-func NetipAddr(envKey string, options ...Option) (
+func (e *Env) NetipAddr(envKey string, options ...Option) (
 	addr netip.Addr, err error) {
-	s := Get(envKey, options...)
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return addr, nil

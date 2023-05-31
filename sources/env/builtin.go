@@ -2,7 +2,6 @@ package env
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -23,10 +22,10 @@ import (
 // - Trim spaces.
 // - Trim quotes.
 // - Force lowercase.
-func Get(envKey string, options ...Option) (value *string) {
+func (e *Env) Get(envKey string, options ...Option) (value *string) {
 	settings := settingsFromOptions(options)
 
-	envValue, isSet := os.LookupEnv(envKey)
+	envValue, isSet := e.environ[envKey]
 	if !isSet || (!*settings.acceptEmpty && envValue == "") {
 		return nil
 	}
@@ -77,8 +76,8 @@ func postProcessValue(value string, settings settings) string {
 // - Trim spaces.
 // - Trim quotes.
 // - Force lowercase.
-func String(envKey string, options ...Option) (value string) {
-	s := Get(envKey, options...)
+func (e *Env) String(envKey string, options ...Option) (value string) {
+	s := e.Get(envKey, options...)
 	if s == nil {
 		return ""
 	}
@@ -93,8 +92,8 @@ func String(envKey string, options ...Option) (value string) {
 // is returned.
 // Otherwise, the value is split by commas and returned as a
 // slice of strings.
-func CSV(envKey string, options ...Option) (values []string) {
-	csv := Get(envKey, options...)
+func (e *Env) CSV(envKey string, options ...Option) (values []string) {
+	csv := e.Get(envKey, options...)
 	if csv == nil {
 		return nil
 	}
@@ -107,8 +106,8 @@ func CSV(envKey string, options ...Option) (values []string) {
 // Otherwise, if the value is not a valid integer string, an
 // error is returned with the environment variable name in the
 // error context.
-func Int(envKey string, options ...Option) (n int, err error) {
-	s := Get(envKey, options...)
+func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return 0, nil
@@ -127,8 +126,8 @@ func Int(envKey string, options ...Option) (n int, err error) {
 // the empty string, `0` is returned.
 // Otherwise, if the value is not a valid float64 string, an error is
 // returned with the environment variable name in the error context.
-func Float64(envKey string, options ...Option) (f float64, err error) {
-	s := Get(envKey, options...)
+func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return 0, nil
@@ -150,8 +149,8 @@ func Float64(envKey string, options ...Option) (f float64, err error) {
 // `nil` is returned.
 // Otherwise, if the value is not one of the above, an error is returned
 // with the environment variable name in the error context.
-func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
-	s := Get(envKey, options...)
+func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
@@ -169,8 +168,8 @@ func BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 // `nil` is returned.
 // Otherwise, if the value is not a valid integer string, an error is returned
 // with the environment variable name in the error context.
-func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
-	s := Get(envKey, options...)
+func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
@@ -187,8 +186,8 @@ func IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 // `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 255,
 // an error is returned with the environment variable name in the error context.
-func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
-	s := Get(envKey, options...)
+func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
@@ -210,9 +209,9 @@ func Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 // `nil` is returned.
 // Otherwise, if the value is not a valid integer string between 0 and 65535,
 // an error is returned with the environment variable name in the error context.
-func Uint16Ptr(envKey string, options ...Option) (
+func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
-	s := Get(envKey, options...)
+	s := e.Get(envKey, options...)
 	if s == nil || *s == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
