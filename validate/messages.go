@@ -13,11 +13,12 @@ func joinStrings[T comparable](elements []T, lastJoin string) (result string) {
 
 	result = fmt.Sprint(elements[0])
 	for i := 1; i < len(elements); i++ {
-		if i < len(elements)-1 {
-			result += fmt.Sprint(elements[i]) + ", "
-		} else {
+		lastElement := i == len(elements)-1
+		if lastElement {
 			result += " " + lastJoin + " " + fmt.Sprint(elements[i])
+			continue
 		}
+		result += ", " + fmt.Sprint(elements[i])
 	}
 
 	return result
