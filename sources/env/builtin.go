@@ -227,3 +227,27 @@ func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 	*uint16Ptr = uint16(value)
 	return uint16Ptr, nil
 }
+
+// Uint32Ptr returns a pointer to an `uint32` from an environment variable value.
+// If the environment variable is not set or its value is the empty string,
+// `nil` is returned.
+// Otherwise, if the value is not a valid integer string between 0 and 4294967295
+// an error is returned with the environment variable name in the error context.
+func (e *Env) Uint32Ptr(envKey string, options ...Option) (
+	uint32Ptr *uint32, err error) {
+	s := e.Get(envKey, options...)
+	if s == nil || *s == "" {
+		// note: no point accepting the empty string in this case
+		return nil, nil //nolint:nilnil
+	}
+
+	const min, max = 0, 4294967295
+	value, err := integer.Validate(*s, integer.OptionRange(min, max))
+	if err != nil {
+		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
+	}
+
+	uint32Ptr = new(uint32)
+	*uint32Ptr = uint32(value)
+	return uint32Ptr, nil
+}
