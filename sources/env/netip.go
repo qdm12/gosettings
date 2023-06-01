@@ -26,3 +26,13 @@ func (e *Env) NetipAddr(envKey string, options ...Option) (
 
 	return addr, nil
 }
+
+// CSVUint64 returns a slice of netip.Prefix from a comma separated
+// environment variable value and returns an error if any value
+// is not a valid netip.Prefix string.
+// If the environment variable is not set or its value is empty,
+// `nil` is returned.
+func (e *Env) CSVNetipPrefixes(envKey string, options ...Option) (
+	prefixes []netip.Prefix, err error) {
+	return csvParse(e, envKey, netip.ParsePrefix, options...)
+}
