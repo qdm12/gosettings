@@ -55,7 +55,7 @@ func MergeWithString(existing, other string) (result string) {
 // Note it is preferrable to use this function for added mutation safety
 // on the result, but one can use MergeWithSliceRaw if performance matters.
 func MergeWithSlice[T any](existing, other []T) (result []T) {
-	if existing != nil {
+	if existing != nil || other == nil {
 		return existing
 	}
 	result = make([]T, len(other))
