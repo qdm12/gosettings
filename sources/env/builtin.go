@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/qdm12/govalid/binary"
-	"github.com/qdm12/govalid/integer"
 )
 
 // Get returns an environment variable value as a string pointer.
@@ -113,7 +112,7 @@ func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
 		return 0, nil
 	}
 
-	n, err = strconv.Atoi(*s)
+	n, err = parseInt(*s)
 	if err != nil {
 		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -174,7 +173,7 @@ func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) 
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
 	}
-	value, err := strconv.Atoi(*s)
+	value, err := parseInt(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
@@ -193,15 +192,12 @@ func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err e
 		return nil, nil //nolint:nilnil
 	}
 
-	const min, max = 0, 255
-	value, err := integer.Validate(*s, integer.OptionRange(min, max))
+	value, err := parseUint8(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 
-	uint8Ptr = new(uint8)
-	*uint8Ptr = uint8(value)
-	return uint8Ptr, nil
+	return &value, nil
 }
 
 // Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
@@ -217,15 +213,12 @@ func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 		return nil, nil //nolint:nilnil
 	}
 
-	const min, max = 0, 65535
-	value, err := integer.Validate(*s, integer.OptionRange(min, max))
+	value, err := parseUint16(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 
-	uint16Ptr = new(uint16)
-	*uint16Ptr = uint16(value)
-	return uint16Ptr, nil
+	return &value, nil
 }
 
 // Uint32Ptr returns a pointer to an `uint32` from an environment variable value.
@@ -241,13 +234,10 @@ func (e *Env) Uint32Ptr(envKey string, options ...Option) (
 		return nil, nil //nolint:nilnil
 	}
 
-	const min, max = 0, 4294967295
-	value, err := integer.Validate(*s, integer.OptionRange(min, max))
+	value, err := parseUint32(*s)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
 
-	uint32Ptr = new(uint32)
-	*uint32Ptr = uint32(value)
-	return uint32Ptr, nil
+	return &value, nil
 }
