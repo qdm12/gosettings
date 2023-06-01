@@ -17,8 +17,8 @@ var (
 
 func parseBool(value string) (output bool, err error) {
 	lowercasedValue := strings.ToLower(value)
-	enabledStrings := []string{"enabled", "yes", "on"}
-	disabledStrings := []string{"disabled", "no", "off"}
+	enabledStrings := []string{"enabled", "yes", "on", "true"}
+	disabledStrings := []string{"disabled", "no", "off", "false"}
 	for _, enabledString := range enabledStrings {
 		if lowercasedValue == enabledString {
 			return true, nil

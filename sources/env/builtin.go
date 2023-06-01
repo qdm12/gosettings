@@ -140,8 +140,8 @@ func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
 }
 
 // BoolPtr returns a pointer to a `bool` from an environment variable value.
-// 'true' string values are: "enabled", "yes", "on".
-// 'false' string values are: "disabled", "no", "off".
+// 'true' string values are: "enabled", "yes", "on", "true".
+// 'false' string values are: "disabled", "no", "off", "false".
 // If the environment variable is not set or its value is the empty string,
 // `nil` is returned.
 // Otherwise, if the value is not one of the above, an error is returned
