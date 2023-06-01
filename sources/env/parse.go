@@ -5,13 +5,38 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 
+	"github.com/qdm12/gosettings/validate"
 	"golang.org/x/exp/constraints"
 )
 
 var (
 	ErrValueNotInRange = errors.New("value is not in range")
 )
+
+func parseBool(value string) (output bool, err error) {
+	lowercasedValue := strings.ToLower(value)
+	enabledStrings := []string{"enabled", "yes", "on"}
+	disabledStrings := []string{"disabled", "no", "off"}
+	for _, enabledString := range enabledStrings {
+		if lowercasedValue == enabledString {
+			return true, nil
+		}
+	}
+
+	for _, disabledString := range disabledStrings {
+		if lowercasedValue == disabledString {
+			return false, nil
+		}
+	}
+
+	possibilities := make([]string, len(enabledStrings), len(enabledStrings)+len(disabledStrings))
+	copy(possibilities, enabledStrings)
+	possibilities = append(possibilities, disabledStrings...)
+	err = validate.IsOneOf(lowercasedValue, possibilities...)
+	return false, err
+}
 
 func parseInt(value string) (output int, err error) {
 	const min, max = int64(math.MinInt), int64(math.MaxInt)

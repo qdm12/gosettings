@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/qdm12/govalid/binary"
 )
 
 // Get returns an environment variable value as a string pointer.
@@ -149,17 +147,17 @@ func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
 // Otherwise, if the value is not one of the above, an error is returned
 // with the environment variable name in the error context.
 func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
-	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
+	value := e.Get(envKey, options...)
+	if value == nil || *value == "" {
 		// note: no point accepting the empty string in this case
 		return nil, nil //nolint:nilnil
 	}
 
-	value, err := binary.Validate(*s)
+	boolValue, err := parseBool(*value)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
-	return value, nil
+	return &boolValue, nil
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.

@@ -136,7 +136,3 @@ See the [runnable example](examples/merger/main.go) which uses the [example sett
 #### Updating settings at runtime
 
 🚧 To be completed 🚧
-
-## FAQ
-
-- Why the `github.com/qdm12/govalid` dependency? **It is used in the environment variables helpers [`sources/env`](sources/env)**.
