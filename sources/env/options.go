@@ -20,3 +20,14 @@ func AcceptEmpty(accept bool) Option {
 		s.acceptEmpty = &accept
 	}
 }
+
+// RetroKeys specifies a list of environment variable keys
+// that are deprecated and replaced by the current key.
+// The `handleDeprecatedKey` function is called when a deprecated
+// key is used, with the deprecated key and the current key as
+// arguments.
+func RetroKeys(retroKeys ...string) Option {
+	return func(s *settings) {
+		s.retroKeys = retroKeys
+	}
+}

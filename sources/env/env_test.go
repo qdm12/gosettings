@@ -51,7 +51,8 @@ func Test_New(t *testing.T) {
 	}
 	testKeys[notExistsKey] = struct{}{}
 
-	env := New(os.Environ())
+	handleDeprecatedKey := (func(oldKey string, currentKey string))(nil)
+	env := New(os.Environ(), handleDeprecatedKey)
 
 	// Remove other test irrelevant environment variables
 	for k := range env.environ {
@@ -60,6 +61,11 @@ func Test_New(t *testing.T) {
 			delete(env.environ, k)
 		}
 	}
+
+	if env.handleDeprecatedKey == nil {
+		t.Error("expected handleDeprecatedKey to be set")
+	}
+	env.handleDeprecatedKey = nil
 
 	expectedEnv := &Env{
 		environ: map[string]string{

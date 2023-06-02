@@ -10,6 +10,7 @@ type settings struct {
 	trimQuotes      *bool
 	forceLowercase  *bool
 	acceptEmpty     *bool
+	retroKeys       []string
 }
 
 func settingsFromOptions(options []Option) (s settings) {

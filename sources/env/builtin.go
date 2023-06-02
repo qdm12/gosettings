@@ -22,13 +22,40 @@ import (
 func (e *Env) Get(envKey string, options ...Option) (value *string) {
 	settings := settingsFromOptions(options)
 
-	envValue, isSet := e.environ[envKey]
-	if !isSet || (!*settings.acceptEmpty && envValue == "") {
+	keysToTry := make([]string, 0, 1+len(settings.retroKeys))
+	keysToTry = append(keysToTry, settings.retroKeys...)
+	// Note we try the current environment variable key last
+	// because it might be set in a Docker image so we want to
+	// take the older configuration from the user first.
+	keysToTry = append(keysToTry, envKey)
+
+	var firstEnvKeySet string
+	for _, keyToTry := range keysToTry {
+		envValue, isSet := e.environ[keyToTry]
+		if !isSet {
+			continue
+		}
+		firstEnvKeySet = envKey
+		value = new(string)
+		*value = envValue
+		break
+	}
+
+	if firstEnvKeySet == "" { // All keys are unset
 		return nil
 	}
 
-	value = new(string)
-	*value = postProcessValue(envValue, settings)
+	if firstEnvKeySet != envKey {
+		e.handleDeprecatedKey(firstEnvKeySet, envKey)
+	}
+
+	if !*settings.acceptEmpty && *value == "" {
+		// environment variable value is set to the empty string,
+		// but the empty string is not accepted so return nil.
+		return nil
+	}
+
+	*value = postProcessValue(*value, settings)
 	return value
 }
 
