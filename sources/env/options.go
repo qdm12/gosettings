@@ -23,6 +23,10 @@ func AcceptEmpty(accept bool) Option {
 
 // RetroKeys specifies a list of environment variable keys
 // that are deprecated and replaced by the current key.
+// The oldest retro-compatible key should be placed first
+// in the list of retro keys, so it gets checked first, which
+// is especially important if for example default variable values
+// are set in the program or operating system matching more recent keys.
 // The `handleDeprecatedKey` function is called when a deprecated
 // key is used, with the deprecated key and the current key as
 // arguments.
