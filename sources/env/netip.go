@@ -27,6 +27,16 @@ func (e *Env) NetipAddr(envKey string, options ...Option) (
 	return addr, nil
 }
 
+// CSVNetipAddresses returns a slice of netip.Addr from a comma separated
+// environment variable value and returns an error if any value
+// is not a valid netip.Addr string.
+// If the environment variable is not set or its value is empty,
+// `nil` is returned.
+func (e *Env) CSVNetipAddresses(envKey string, options ...Option) (
+	prefixes []netip.Addr, err error) {
+	return csvParse(e, envKey, netip.ParseAddr, options...)
+}
+
 // CSVNetipPrefixes returns a slice of netip.Prefix from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid netip.Prefix string.
