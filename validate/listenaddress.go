@@ -10,6 +10,10 @@ import (
 // ListeningAddress validates a listening address string given a user ID `uid`
 // and an optional list of allowed privileged ports.
 func ListeningAddress(address string, uid int, allowedPrivilegedPorts ...uint16) (err error) {
+	if address == "" { // listen on all interfaces on any available port
+		return nil
+	}
+
 	_, portStr, err := net.SplitHostPort(address)
 	if err != nil {
 		return fmt.Errorf("splitting host and port: %w", err)

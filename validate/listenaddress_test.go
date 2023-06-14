@@ -16,6 +16,7 @@ func Test_ListeningAddress(t *testing.T) {
 		noErrWrap              bool
 		errMessage             string
 	}{
+		"empty": {},
 		"missing_semicolon": {
 			address:    "1.2.3.4",
 			noErrWrap:  true,
