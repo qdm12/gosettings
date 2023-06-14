@@ -27,7 +27,7 @@ func (e *Env) NetipAddr(envKey string, options ...Option) (
 	return addr, nil
 }
 
-// CSVUint64 returns a slice of netip.Prefix from a comma separated
+// CSVNetipPrefixes returns a slice of netip.Prefix from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid netip.Prefix string.
 // If the environment variable is not set or its value is empty,
