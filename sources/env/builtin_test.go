@@ -2,8 +2,6 @@ package env
 
 import "testing"
 
-func ptrTo[T any](x T) *T { return &x }
-
 func Test_postProcessValue(t *testing.T) {
 	t.Parallel()
 

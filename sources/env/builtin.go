@@ -180,11 +180,11 @@ func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err erro
 		return nil, nil //nolint:nilnil
 	}
 
-	boolValue, err := parseBool(*value)
+	boolPtr, err = parseBool(*value)
 	if err != nil {
 		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
 	}
-	return &boolValue, nil
+	return boolPtr, nil
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.

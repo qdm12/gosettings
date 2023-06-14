@@ -15,19 +15,25 @@ var (
 	ErrValueNotInRange = errors.New("value is not in range")
 )
 
-func parseBool(value string) (output bool, err error) {
+func ptrTo[T any](x T) *T { return &x }
+
+func parseBool(value string) (output *bool, err error) {
+	if value == "" {
+		return nil, nil //nolint:nilnil
+	}
+
 	lowercasedValue := strings.ToLower(value)
 	enabledStrings := []string{"enabled", "yes", "on", "true"}
 	disabledStrings := []string{"disabled", "no", "off", "false"}
 	for _, enabledString := range enabledStrings {
 		if lowercasedValue == enabledString {
-			return true, nil
+			return ptrTo(true), nil
 		}
 	}
 
 	for _, disabledString := range disabledStrings {
 		if lowercasedValue == disabledString {
-			return false, nil
+			return ptrTo(false), nil
 		}
 	}
 
@@ -35,7 +41,7 @@ func parseBool(value string) (output bool, err error) {
 	copy(possibilities, enabledStrings)
 	possibilities = append(possibilities, disabledStrings...)
 	err = validate.IsOneOf(lowercasedValue, possibilities...)
-	return false, err
+	return ptrTo(false), err
 }
 
 func parseInt(value string) (output int, err error) {
