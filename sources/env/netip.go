@@ -6,16 +6,16 @@ import (
 )
 
 // NetipAddr returns a netip.Addr from an environment variable value.
-// If the environment variable is not set or its value is
-// the empty string, the empty invalid `netip.Addr{}` is returned.
-// Otherwise, if the value is not a valid ip string,
-// an error is returned with the environment variable name
-// in its message.
+// If the value is not a valid netip.Addr string, an error is returned
+// with the environment variable name in its message.
+// The value is returned as the empty invalid `netip.Addr{}` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) NetipAddr(envKey string, options ...Option) (
 	addr netip.Addr, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return addr, nil
 	}
 

@@ -7,16 +7,16 @@ import (
 
 // DurationPtr returns a pointer to a `time.Duration`
 // from an environment variable value.
-// If the environment variable is not set or its value is
-// the empty string, `nil` is returned.
-// Otherwise, if the value is not a valid duration string,
-// an error is returned with the environment variable name
-// in its message.
+// If the value is not a valid time.Duration string, an error
+// is returned with the environment variable name in its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return nil, nil //nolint:nilnil
 	}
 
@@ -31,16 +31,16 @@ func (e *Env) DurationPtr(envKey string, options ...Option) (
 
 // Duration returns a `time.Duration` from an environment
 // variable value.
-// If the environment variable is not set or its value is
-// the empty string, `0` is returned.
-// Otherwise, if the value is not a valid duration string,
-// an error is returned with the environment variable name
-// in its message.
+// If the value is not a valid time.Duration string, an error
+// is returned with the environment variable name in its message.
+// The value is returned as `0` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Duration(envKey string, options ...Option) (
 	duration time.Duration, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return 0, nil
 	}
 

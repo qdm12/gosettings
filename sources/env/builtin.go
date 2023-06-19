@@ -134,15 +134,15 @@ func (e *Env) CSV(envKey string, options ...Option) (values []string) {
 }
 
 // Int returns an `int` from an environment variable value.
-// If the environment variable is not set or its value is
-// the empty string, `0` is returned.
-// Otherwise, if the value is not a valid integer string, an
-// error is returned with the environment variable name in its
-// message.
+// If the value is not a valid integer string, an error is
+// returned with the environment variable name in its message.
+// The value is returned as `0` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return 0, nil
 	}
 
@@ -155,15 +155,15 @@ func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
 }
 
 // Float64 returns a `float64` from an environment variable value.
-// If the environment variable is not set or its value is
-// the empty string, `0` is returned.
-// Otherwise, if the value is not a valid float64 string, an
-// error is returned with the environment variable name in its
-// message.
+// If the value is not a valid float64 string, an error is returned
+// with the environment variable name in its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return 0, nil
 	}
 
@@ -180,15 +180,16 @@ func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
 //   - 'true' string values are: "enabled", "yes", "on", "true".
 //   - 'false' string values are: "disabled", "no", "off", "false".
 //
-// If the environment variable is not set or its value is the empty string,
-// `nil` is returned.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 //
 // Otherwise, if the value is not one of the above, an error is returned
 // with the environment variable name in its message.
 func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
 	value := e.Get(envKey, options...)
-	if value == nil || *value == "" {
-		// note: no point accepting the empty string in this case
+	if value == nil {
 		return nil, nil //nolint:nilnil
 	}
 
@@ -200,14 +201,15 @@ func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err erro
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.
-// If the environment variable is not set or its value is the empty string,
-// `nil` is returned.
-// Otherwise, if the value is not a valid integer string, an error is returned
+// If the value is not a valid integer string, an error is returned
 // with the environment variable name in its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return nil, nil //nolint:nilnil
 	}
 	value, err := parseInt(*s)
@@ -218,14 +220,15 @@ func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) 
 }
 
 // Uint8Ptr returns a pointer to an `uint8` from an environment variable value.
-// If the environment variable is not set or its value is the empty string,
-// `nil` is returned.
-// Otherwise, if the value is not a valid integer string between 0 and 255,
+// If the value is not a valid integer string between 0 and 255,
 // an error is returned with the environment variable name in its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return nil, nil //nolint:nilnil
 	}
 
@@ -238,15 +241,16 @@ func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err e
 }
 
 // Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
-// If the environment variable is not set or its value is the empty string,
-// `nil` is returned.
-// Otherwise, if the value is not a valid integer string between 0 and 65535,
+// If the value is not a valid integer string between 0 and 65535,
 // an error is returned with the environment variable name its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return nil, nil //nolint:nilnil
 	}
 
@@ -259,15 +263,16 @@ func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 }
 
 // Uint32Ptr returns a pointer to an `uint32` from an environment variable value.
-// If the environment variable is not set or its value is the empty string,
-// `nil` is returned.
-// Otherwise, if the value is not a valid integer string between 0 and 4294967295
+// If the value is not a valid integer string between 0 and 4294967295
 // an error is returned with the environment variable name in its message.
+// The value is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     environment variable is set and its value is empty.
 func (e *Env) Uint32Ptr(envKey string, options ...Option) (
 	uint32Ptr *uint32, err error) {
 	s := e.Get(envKey, options...)
-	if s == nil || *s == "" {
-		// note: no point accepting the empty string in this case
+	if s == nil {
 		return nil, nil //nolint:nilnil
 	}
 
