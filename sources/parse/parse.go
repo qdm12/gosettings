@@ -1,4 +1,4 @@
-package env
+package parse
 
 import (
 	"errors"
@@ -10,6 +10,10 @@ import (
 	"github.com/qdm12/gosettings/validate"
 	"golang.org/x/exp/constraints"
 )
+
+// ParseFunc is a function that parses a string into a value of type T
+// and returns an error if the parsing failed.
+type ParseFunc[T any] func(value string) (x T, err error)
 
 var (
 	ErrValueNotInRange = errors.New("value is not in range")
@@ -122,4 +126,24 @@ func parseUnsigned[T constraints.Unsigned](value string, min, max uint64) ( //no
 	}
 
 	return T(xUint64), nil
+}
+
+func parseFloat64(value string) (output float64, err error) {
+	const min, max = 0, math.MaxFloat64
+	return parseFloat[float64](value, min, max)
+}
+
+func parseFloat[T constraints.Float](value string, min, max float64) ( //nolint:ireturn
+	n T, err error) {
+	const bitSize = 64
+	xFloat64, err := strconv.ParseFloat(value, bitSize)
+	if err != nil {
+		return 0, err
+	}
+	if xFloat64 < min || xFloat64 > max {
+		return 0, fmt.Errorf("%w: %f is not between %f and %f",
+			ErrValueNotInRange, xFloat64, min, max)
+	}
+
+	return T(xFloat64), nil
 }

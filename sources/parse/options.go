@@ -1,0 +1,41 @@
+package parse
+
+// Option is an option to modify the behavior of
+// the `Get` method which is called by all the
+// other functions.
+type Option func(s *settings)
+
+// ForceLowercase forces the string values read from the
+// keyValues map to be lowercased or not, depending on the
+// `lowercase` argument given.
+func ForceLowercase(lowercase bool) Option {
+	return func(s *settings) {
+		s.forceLowercase = &lowercase
+	}
+}
+
+// AcceptEmpty, if set to true, makes the code distinguish
+// between unset keys and empty values in the keyValues map.
+// By default, the code does not distinguish between the two cases.
+func AcceptEmpty(accept bool) Option {
+	return func(s *settings) {
+		s.acceptEmpty = &accept
+	}
+}
+
+// RetroKeys specifies a list of keys that are deprecated and
+// replaced by the current key.
+// The oldest deprecated key should be placed first
+// in the list of deprecated keys, so it gets checked first, which
+// is especially important if for example default variable values
+// are set in the program or operating system matching more recent keys.
+// The `handleDeprecatedKey` function is called when a deprecated
+// key is used, with the deprecated key and the current key as
+// arguments.
+func RetroKeys(handleDeprecatedKey func(deprecateKey, currentKey string),
+	deprecatedKeys ...string) Option {
+	return func(s *settings) {
+		s.deprecatedKeys = deprecatedKeys
+		s.handleDeprecatedKey = handleDeprecatedKey
+	}
+}

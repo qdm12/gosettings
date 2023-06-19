@@ -1,8 +1,6 @@
 package env
 
-import (
-	"fmt"
-)
+import "github.com/qdm12/gosettings/sources/parse"
 
 // CSVInt returns a slice of int from a comma separated
 // environment variable value and returns an error if any value
@@ -12,29 +10,32 @@ import (
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt(envKey string, options ...Option) (values []int, err error) {
-	return csvParse(e, envKey, parseInt, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVInt(e.environ, envKey, parseOptions...)
 }
 
 // CSVInt8 returns a slice of int8 from a comma separated
 // environment variable value and returns an error if any value
-// is not a valid uint8 string.
+// is not a valid int8 string.
 // The slice is returned as `nil` if:
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt8(envKey string, options ...Option) (values []int8, err error) {
-	return csvParse(e, envKey, parseInt8, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVInt8(e.environ, envKey, parseOptions...)
 }
 
 // CSVInt16 returns a slice of int16 from a comma separated
 // environment variable value and returns an error if any value
-// is not a valid uint16 string.
+// is not a valid int16 string.
 // The slice is returned as `nil` if:
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt16(envKey string, options ...Option) (values []int16, err error) {
-	return csvParse(e, envKey, parseInt16, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVInt16(e.environ, envKey, parseOptions...)
 }
 
 // CSVInt32 returns a slice of int32 from a comma separated
@@ -45,7 +46,8 @@ func (e *Env) CSVInt16(envKey string, options ...Option) (values []int16, err er
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt32(envKey string, options ...Option) (values []int32, err error) {
-	return csvParse(e, envKey, parseInt32, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVInt32(e.environ, envKey, parseOptions...)
 }
 
 // CSVInt64 returns a slice of int64 from a comma separated
@@ -56,7 +58,8 @@ func (e *Env) CSVInt32(envKey string, options ...Option) (values []int32, err er
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt64(envKey string, options ...Option) (values []int64, err error) {
-	return csvParse(e, envKey, parseInt64, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVInt64(e.environ, envKey, parseOptions...)
 }
 
 // CSVUint returns a slice of uint from a comma separated
@@ -67,7 +70,8 @@ func (e *Env) CSVInt64(envKey string, options ...Option) (values []int64, err er
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint(envKey string, options ...Option) (values []uint, err error) {
-	return csvParse(e, envKey, parseUint, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVUint(e.environ, envKey, parseOptions...)
 }
 
 // CSVUint8 returns a slice of uint8 from a comma separated
@@ -78,7 +82,8 @@ func (e *Env) CSVUint(envKey string, options ...Option) (values []uint, err erro
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint8(envKey string, options ...Option) (values []uint8, err error) {
-	return csvParse(e, envKey, parseUint8, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVUint8(e.environ, envKey, parseOptions...)
 }
 
 // CSVUint16 returns a slice of uint16 from a comma separated
@@ -89,7 +94,8 @@ func (e *Env) CSVUint8(envKey string, options ...Option) (values []uint8, err er
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint16(envKey string, options ...Option) (values []uint16, err error) {
-	return csvParse(e, envKey, parseUint16, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVUint16(e.environ, envKey, parseOptions...)
 }
 
 // CSVUint32 returns a slice of uint32 from a comma separated
@@ -100,7 +106,8 @@ func (e *Env) CSVUint16(envKey string, options ...Option) (values []uint16, err 
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint32(envKey string, options ...Option) (values []uint32, err error) {
-	return csvParse(e, envKey, parseUint32, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVUint32(e.environ, envKey, parseOptions...)
 }
 
 // CSVUint64 returns a slice of uint64 from a comma separated
@@ -111,25 +118,6 @@ func (e *Env) CSVUint32(envKey string, options ...Option) (values []uint32, err 
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint64(envKey string, options ...Option) (values []uint64, err error) {
-	return csvParse(e, envKey, parseUint64, options...)
-}
-
-func csvParse[T any](env *Env, envKey string,
-	parse func(value string) (output T, err error),
-	options ...Option) (
-	values []T, err error) {
-	stringValues := env.CSV(envKey, options...)
-	if stringValues == nil {
-		return nil, nil
-	}
-
-	values = make([]T, len(stringValues))
-	for i, stringValue := range stringValues {
-		values[i], err = parse(stringValue)
-		if err != nil {
-			return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
-		}
-	}
-
-	return values, nil
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVUint64(e.environ, envKey, parseOptions...)
 }

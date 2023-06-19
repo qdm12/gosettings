@@ -1,8 +1,9 @@
 package env
 
 import (
-	"fmt"
 	"time"
+
+	"github.com/qdm12/gosettings/sources/parse"
 )
 
 // DurationPtr returns a pointer to a `time.Duration`
@@ -15,18 +16,8 @@ import (
 //     environment variable is set and its value is empty.
 func (e *Env) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
-	s := e.Get(envKey, options...)
-	if s == nil {
-		return nil, nil //nolint:nilnil
-	}
-
-	durationPtr = new(time.Duration)
-	*durationPtr, err = time.ParseDuration(*s)
-	if err != nil {
-		return nil, fmt.Errorf("environment variable %s: %w", envKey, err)
-	}
-
-	return durationPtr, nil
+	parseOptions := e.makeParseOptions(options)
+	return parse.DurationPtr(e.environ, envKey, parseOptions...)
 }
 
 // Duration returns a `time.Duration` from an environment
@@ -39,15 +30,6 @@ func (e *Env) DurationPtr(envKey string, options ...Option) (
 //     environment variable is set and its value is empty.
 func (e *Env) Duration(envKey string, options ...Option) (
 	duration time.Duration, err error) {
-	s := e.Get(envKey, options...)
-	if s == nil {
-		return 0, nil
-	}
-
-	duration, err = time.ParseDuration(*s)
-	if err != nil {
-		return 0, fmt.Errorf("environment variable %s: %w", envKey, err)
-	}
-
-	return duration, nil
+	parseOptions := e.makeParseOptions(options)
+	return parse.Duration(e.environ, envKey, parseOptions...)
 }

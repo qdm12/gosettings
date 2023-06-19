@@ -1,30 +1,33 @@
 package env
 
-import (
-	"github.com/qdm12/gosettings"
-)
+import "github.com/qdm12/gosettings/sources/parse"
 
 type settings struct {
-	trimLineEndings *bool
-	trimSpace       *bool
-	trimQuotes      *bool
-	forceLowercase  *bool
-	acceptEmpty     *bool
-	retroKeys       []string
+	forceLowercase *bool
+	acceptEmpty    *bool
+	retroKeys      []string
 }
 
-func settingsFromOptions(options []Option) (s settings) {
+func (e *Env) makeParseOptions(options []Option) (parseOptions []parse.Option) {
+	var settings settings
 	for _, option := range options {
-		option(&s)
+		option(&settings)
 	}
-	s.setDefaults()
-	return s
-}
 
-func (s *settings) setDefaults() {
-	s.trimLineEndings = gosettings.DefaultPointer(s.trimLineEndings, true)
-	s.trimSpace = gosettings.DefaultPointer(s.trimSpace, true)
-	s.trimQuotes = gosettings.DefaultPointer(s.trimQuotes, true)
-	s.forceLowercase = gosettings.DefaultPointer(s.forceLowercase, true)
-	s.acceptEmpty = gosettings.DefaultPointer(s.acceptEmpty, false)
+	const maxOptions = 3
+	parseOptions = make([]parse.Option, 0, maxOptions)
+	if settings.forceLowercase != nil {
+		parseOption := parse.ForceLowercase(*settings.forceLowercase)
+		parseOptions = append(parseOptions, parseOption)
+	}
+	if settings.acceptEmpty != nil {
+		parseOption := parse.AcceptEmpty(*settings.acceptEmpty)
+		parseOptions = append(parseOptions, parseOption)
+	}
+	if len(settings.retroKeys) > 0 {
+		parseOption := parse.RetroKeys(e.handleDeprecatedKey, settings.retroKeys...)
+		parseOptions = append(parseOptions, parseOption)
+	}
+
+	return parseOptions
 }

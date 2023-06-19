@@ -1,8 +1,9 @@
 package env
 
 import (
-	"fmt"
 	"net/netip"
+
+	"github.com/qdm12/gosettings/sources/parse"
 )
 
 // NetipAddr returns a netip.Addr from an environment variable value.
@@ -14,17 +15,8 @@ import (
 //     environment variable is set and its value is empty.
 func (e *Env) NetipAddr(envKey string, options ...Option) (
 	addr netip.Addr, err error) {
-	s := e.Get(envKey, options...)
-	if s == nil {
-		return addr, nil
-	}
-
-	addr, err = netip.ParseAddr(*s)
-	if err != nil {
-		return addr, fmt.Errorf("environment variable %s: %w", envKey, err)
-	}
-
-	return addr, nil
+	parseOptions := e.makeParseOptions(options)
+	return parse.NetipAddr(e.environ, envKey, parseOptions...)
 }
 
 // CSVNetipAddresses returns a slice of netip.Addr from a comma separated
@@ -45,7 +37,8 @@ func (e *Env) NetipAddr(envKey string, options ...Option) (
 //   - Force lowercase.
 func (e *Env) CSVNetipAddresses(envKey string, options ...Option) (
 	prefixes []netip.Addr, err error) {
-	return csvParse(e, envKey, netip.ParseAddr, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVNetipAddresses(e.environ, envKey, parseOptions...)
 }
 
 // CSVNetipPrefixes returns a slice of netip.Prefix from a comma separated
@@ -66,5 +59,6 @@ func (e *Env) CSVNetipAddresses(envKey string, options ...Option) (
 //   - Force lowercase.
 func (e *Env) CSVNetipPrefixes(envKey string, options ...Option) (
 	prefixes []netip.Prefix, err error) {
-	return csvParse(e, envKey, netip.ParsePrefix, options...)
+	parseOptions := e.makeParseOptions(options)
+	return parse.CSVNetipPrefixes(e.environ, envKey, parseOptions...)
 }

@@ -2,8 +2,8 @@ package env
 
 import "strings"
 
-// Env is an environment variables reader
-// with helping methods to parse values.
+// Env is an environment variables source parser
+// based on functions from the sources/parser package.
 type Env struct {
 	environ             map[string]string
 	handleDeprecatedKey func(deprecatedKey string, currentKey string)
