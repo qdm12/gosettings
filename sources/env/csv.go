@@ -7,8 +7,10 @@ import (
 // CSVInt returns a slice of int from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid int string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt(envKey string, options ...Option) (values []int, err error) {
 	return csvParse(e, envKey, parseInt, options...)
 }
@@ -16,8 +18,10 @@ func (e *Env) CSVInt(envKey string, options ...Option) (values []int, err error)
 // CSVInt8 returns a slice of int8 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint8 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt8(envKey string, options ...Option) (values []int8, err error) {
 	return csvParse(e, envKey, parseInt8, options...)
 }
@@ -25,8 +29,10 @@ func (e *Env) CSVInt8(envKey string, options ...Option) (values []int8, err erro
 // CSVInt16 returns a slice of int16 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint16 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt16(envKey string, options ...Option) (values []int16, err error) {
 	return csvParse(e, envKey, parseInt16, options...)
 }
@@ -34,8 +40,10 @@ func (e *Env) CSVInt16(envKey string, options ...Option) (values []int16, err er
 // CSVInt32 returns a slice of int32 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid int32 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt32(envKey string, options ...Option) (values []int32, err error) {
 	return csvParse(e, envKey, parseInt32, options...)
 }
@@ -43,8 +51,10 @@ func (e *Env) CSVInt32(envKey string, options ...Option) (values []int32, err er
 // CSVInt64 returns a slice of int64 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid int64 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVInt64(envKey string, options ...Option) (values []int64, err error) {
 	return csvParse(e, envKey, parseInt64, options...)
 }
@@ -52,8 +62,10 @@ func (e *Env) CSVInt64(envKey string, options ...Option) (values []int64, err er
 // CSVUint returns a slice of uint from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint(envKey string, options ...Option) (values []uint, err error) {
 	return csvParse(e, envKey, parseUint, options...)
 }
@@ -61,8 +73,10 @@ func (e *Env) CSVUint(envKey string, options ...Option) (values []uint, err erro
 // CSVUint8 returns a slice of uint8 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint8 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint8(envKey string, options ...Option) (values []uint8, err error) {
 	return csvParse(e, envKey, parseUint8, options...)
 }
@@ -70,8 +84,10 @@ func (e *Env) CSVUint8(envKey string, options ...Option) (values []uint8, err er
 // CSVUint16 returns a slice of uint16 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint16 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint16(envKey string, options ...Option) (values []uint16, err error) {
 	return csvParse(e, envKey, parseUint16, options...)
 }
@@ -79,8 +95,10 @@ func (e *Env) CSVUint16(envKey string, options ...Option) (values []uint16, err 
 // CSVUint32 returns a slice of uint32 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint32 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint32(envKey string, options ...Option) (values []uint32, err error) {
 	return csvParse(e, envKey, parseUint32, options...)
 }
@@ -88,8 +106,10 @@ func (e *Env) CSVUint32(envKey string, options ...Option) (values []uint32, err 
 // CSVUint64 returns a slice of uint64 from a comma separated
 // environment variable value and returns an error if any value
 // is not a valid uint64 string.
-// If the environment variable is not set or its value is empty,
-// `nil` is returned.
+// The slice is returned as `nil` if:
+//   - the environment variable key given is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the environment variable is set and its value is empty.
 func (e *Env) CSVUint64(envKey string, options ...Option) (values []uint64, err error) {
 	return csvParse(e, envKey, parseUint64, options...)
 }

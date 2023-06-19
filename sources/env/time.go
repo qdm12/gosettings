@@ -11,7 +11,7 @@ import (
 // the empty string, `nil` is returned.
 // Otherwise, if the value is not a valid duration string,
 // an error is returned with the environment variable name
-// in the error context.
+// in its message.
 func (e *Env) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
 	s := e.Get(envKey, options...)
@@ -35,7 +35,7 @@ func (e *Env) DurationPtr(envKey string, options ...Option) (
 // the empty string, `0` is returned.
 // Otherwise, if the value is not a valid duration string,
 // an error is returned with the environment variable name
-// in the error context.
+// in its message.
 func (e *Env) Duration(envKey string, options ...Option) (
 	duration time.Duration, err error) {
 	s := e.Get(envKey, options...)

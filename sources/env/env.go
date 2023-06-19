@@ -6,7 +6,7 @@ import "strings"
 // with helping methods to parse values.
 type Env struct {
 	environ             map[string]string
-	handleDeprecatedKey func(oldKey string, currentKey string)
+	handleDeprecatedKey func(deprecatedKey string, currentKey string)
 }
 
 // New creates a new environment variables reader

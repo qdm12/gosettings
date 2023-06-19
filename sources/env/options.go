@@ -13,8 +13,10 @@ func ForceLowercase(lowercase bool) Option {
 	}
 }
 
-// AcceptEmpty allows to have set but empty environment
-// variables.
+// AcceptEmpty, if set to true, makes the code distinguish
+// between unset environment variable keys and empty environment
+// variable values. By default, the code does not distinguish
+// between the two cases.
 func AcceptEmpty(accept bool) Option {
 	return func(s *settings) {
 		s.acceptEmpty = &accept
