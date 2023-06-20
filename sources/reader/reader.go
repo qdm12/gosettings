@@ -1,4 +1,4 @@
-package env
+package reader
 
 import "strings"
 

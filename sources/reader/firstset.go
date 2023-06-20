@@ -1,4 +1,4 @@
-package env
+package reader
 
 import "github.com/qdm12/gosettings/sources/parse"
 

@@ -1,4 +1,4 @@
-package env
+package reader
 
 // Option is an option to modify the behavior of
 // `env.Get(key string, options ...Option)`.
