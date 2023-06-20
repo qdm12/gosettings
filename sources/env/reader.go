@@ -2,9 +2,9 @@ package env
 
 import "strings"
 
-// Env is an environment variables source parser
+// Reader is an environment variables source parser
 // based on functions from the sources/parser package.
-type Env struct {
+type Reader struct {
 	keyToValue          map[string]string
 	handleDeprecatedKey func(deprecatedKey string, currentKey string)
 }
@@ -17,7 +17,7 @@ type Env struct {
 // key, and defaults to a no-op function if left to `nil`.
 func New(environ []string,
 	handleDeprecatedKey func(deprecatedKey string, currentKey string),
-) *Env {
+) *Reader {
 	keyToValue := make(map[string]string, len(environ))
 	for _, keyValue := range environ {
 		const maxParts = 2
@@ -32,7 +32,7 @@ func New(environ []string,
 		handleDeprecatedKey = func(oldKey string, currentKey string) {}
 	}
 
-	return &Env{
+	return &Reader{
 		keyToValue:          keyToValue,
 		handleDeprecatedKey: handleDeprecatedKey,
 	}

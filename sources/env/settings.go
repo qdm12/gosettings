@@ -8,7 +8,7 @@ type settings struct {
 	retroKeys      []string
 }
 
-func (e *Env) makeParseOptions(options []Option) (parseOptions []parse.Option) {
+func (r *Reader) makeParseOptions(options []Option) (parseOptions []parse.Option) {
 	var settings settings
 	for _, option := range options {
 		option(&settings)
@@ -25,7 +25,7 @@ func (e *Env) makeParseOptions(options []Option) (parseOptions []parse.Option) {
 		parseOptions = append(parseOptions, parseOption)
 	}
 	if len(settings.retroKeys) > 0 {
-		parseOption := parse.RetroKeys(e.handleDeprecatedKey, settings.retroKeys...)
+		parseOption := parse.RetroKeys(r.handleDeprecatedKey, settings.retroKeys...)
 		parseOptions = append(parseOptions, parseOption)
 	}
 

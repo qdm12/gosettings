@@ -67,7 +67,7 @@ func Test_New(t *testing.T) {
 	}
 	env.handleDeprecatedKey = nil
 
-	expectedEnv := &Env{
+	expectedEnv := &Reader{
 		keyToValue: map[string]string{
 			emptyKey:  "",
 			filledKey: "value",

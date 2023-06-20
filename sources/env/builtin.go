@@ -19,9 +19,9 @@ import (
 //   - Trim spaces.
 //   - Trim quotes.
 //   - Force lowercase.
-func (e *Env) Get(envKey string, options ...Option) (value *string) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Get(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) Get(envKey string, options ...Option) (value *string) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.Get(r.keyToValue, envKey, parseOptions...)
 }
 
 // String returns a string from an environment variable value,
@@ -34,9 +34,9 @@ func (e *Env) Get(envKey string, options ...Option) (value *string) {
 //
 // If the environment variable is not set, the empty string is
 // returned.
-func (e *Env) String(envKey string, options ...Option) (value string) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.String(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) String(envKey string, options ...Option) (value string) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.String(r.keyToValue, envKey, parseOptions...)
 }
 
 // CSV returns a slice of strings from a comma separated
@@ -53,9 +53,9 @@ func (e *Env) String(envKey string, options ...Option) (value string) {
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AcceptEmpty option,
 //     if the environment variable is set and its value is empty.
-func (e *Env) CSV(envKey string, options ...Option) (values []string) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.CSV(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) CSV(envKey string, options ...Option) (values []string) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.CSV(r.keyToValue, envKey, parseOptions...)
 }
 
 // Int returns an `int` from an environment variable value.
@@ -65,9 +65,9 @@ func (e *Env) CSV(envKey string, options ...Option) (values []string) {
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Int(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) Int(envKey string, options ...Option) (n int, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.Int(r.keyToValue, envKey, parseOptions...)
 }
 
 // Float64 returns a `float64` from an environment variable value.
@@ -77,9 +77,9 @@ func (e *Env) Int(envKey string, options ...Option) (n int, err error) {
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Float64(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) Float64(envKey string, options ...Option) (f float64, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.Float64(r.keyToValue, envKey, parseOptions...)
 }
 
 // BoolPtr returns a pointer to a `bool` from an environment variable value.
@@ -93,9 +93,9 @@ func (e *Env) Float64(envKey string, options ...Option) (f float64, err error) {
 //
 // Otherwise, if the value is not one of the above, an error is returned
 // with the environment variable name in its message.
-func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.BoolPtr(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.BoolPtr(r.keyToValue, envKey, parseOptions...)
 }
 
 // IntPtr returns a pointer to an `int` from an environment variable value.
@@ -105,9 +105,9 @@ func (e *Env) BoolPtr(envKey string, options ...Option) (boolPtr *bool, err erro
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.IntPtr(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) IntPtr(envKey string, options ...Option) (intPtr *int, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.IntPtr(r.keyToValue, envKey, parseOptions...)
 }
 
 // Uint8Ptr returns a pointer to an `uint8` from an environment variable value.
@@ -117,9 +117,9 @@ func (e *Env) IntPtr(envKey string, options ...Option) (intPtr *int, err error) 
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Uint8Ptr(e.keyToValue, envKey, parseOptions...)
+func (r *Reader) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.Uint8Ptr(r.keyToValue, envKey, parseOptions...)
 }
 
 // Uint16Ptr returns a pointer to an `uint16` from an environment variable value.
@@ -129,10 +129,10 @@ func (e *Env) Uint8Ptr(envKey string, options ...Option) (uint8Ptr *uint8, err e
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Uint16Ptr(envKey string, options ...Option) (
+func (r *Reader) Uint16Ptr(envKey string, options ...Option) (
 	uint16Ptr *uint16, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Uint16Ptr(e.keyToValue, envKey, parseOptions...)
+	parseOptions := r.makeParseOptions(options)
+	return parse.Uint16Ptr(r.keyToValue, envKey, parseOptions...)
 }
 
 // Uint32Ptr returns a pointer to an `uint32` from an environment variable value.
@@ -142,8 +142,8 @@ func (e *Env) Uint16Ptr(envKey string, options ...Option) (
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Uint32Ptr(envKey string, options ...Option) (
+func (r *Reader) Uint32Ptr(envKey string, options ...Option) (
 	uint32Ptr *uint32, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Uint32Ptr(e.keyToValue, envKey, parseOptions...)
+	parseOptions := r.makeParseOptions(options)
+	return parse.Uint32Ptr(r.keyToValue, envKey, parseOptions...)
 }

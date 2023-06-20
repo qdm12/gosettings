@@ -14,10 +14,10 @@ import (
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) DurationPtr(envKey string, options ...Option) (
+func (r *Reader) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.DurationPtr(e.keyToValue, envKey, parseOptions...)
+	parseOptions := r.makeParseOptions(options)
+	return parse.DurationPtr(r.keyToValue, envKey, parseOptions...)
 }
 
 // Duration returns a `time.Duration` from an environment
@@ -28,8 +28,8 @@ func (e *Env) DurationPtr(envKey string, options ...Option) (
 //   - the environment variable key given is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     environment variable is set and its value is empty.
-func (e *Env) Duration(envKey string, options ...Option) (
+func (r *Reader) Duration(envKey string, options ...Option) (
 	duration time.Duration, err error) {
-	parseOptions := e.makeParseOptions(options)
-	return parse.Duration(e.keyToValue, envKey, parseOptions...)
+	parseOptions := r.makeParseOptions(options)
+	return parse.Duration(r.keyToValue, envKey, parseOptions...)
 }
