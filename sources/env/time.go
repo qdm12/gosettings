@@ -17,7 +17,7 @@ import (
 func (e *Env) DurationPtr(envKey string, options ...Option) (
 	durationPtr *time.Duration, err error) {
 	parseOptions := e.makeParseOptions(options)
-	return parse.DurationPtr(e.environ, envKey, parseOptions...)
+	return parse.DurationPtr(e.keyToValue, envKey, parseOptions...)
 }
 
 // Duration returns a `time.Duration` from an environment
@@ -31,5 +31,5 @@ func (e *Env) DurationPtr(envKey string, options ...Option) (
 func (e *Env) Duration(envKey string, options ...Option) (
 	duration time.Duration, err error) {
 	parseOptions := e.makeParseOptions(options)
-	return parse.Duration(e.environ, envKey, parseOptions...)
+	return parse.Duration(e.keyToValue, envKey, parseOptions...)
 }

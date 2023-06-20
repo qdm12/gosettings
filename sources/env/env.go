@@ -5,7 +5,7 @@ import "strings"
 // Env is an environment variables source parser
 // based on functions from the sources/parser package.
 type Env struct {
-	environ             map[string]string
+	keyToValue          map[string]string
 	handleDeprecatedKey func(deprecatedKey string, currentKey string)
 }
 
@@ -18,14 +18,14 @@ type Env struct {
 func New(environ []string,
 	handleDeprecatedKey func(deprecatedKey string, currentKey string),
 ) *Env {
-	environMap := make(map[string]string, len(environ))
+	keyToValue := make(map[string]string, len(environ))
 	for _, keyValue := range environ {
 		const maxParts = 2
 		parts := strings.SplitN(keyValue, "=", maxParts)
 		if len(parts) != maxParts {
 			panic("invalid environment variable: " + keyValue)
 		}
-		environMap[parts[0]] = parts[1]
+		keyToValue[parts[0]] = parts[1]
 	}
 
 	if handleDeprecatedKey == nil {
@@ -33,7 +33,7 @@ func New(environ []string,
 	}
 
 	return &Env{
-		environ:             environMap,
+		keyToValue:          keyToValue,
 		handleDeprecatedKey: handleDeprecatedKey,
 	}
 }

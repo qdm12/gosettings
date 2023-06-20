@@ -55,10 +55,10 @@ func Test_New(t *testing.T) {
 	env := New(os.Environ(), handleDeprecatedKey)
 
 	// Remove other test irrelevant environment variables
-	for k := range env.environ {
+	for k := range env.keyToValue {
 		_, isTestKey := testKeys[k]
 		if !isTestKey {
-			delete(env.environ, k)
+			delete(env.keyToValue, k)
 		}
 	}
 
@@ -68,7 +68,7 @@ func Test_New(t *testing.T) {
 	env.handleDeprecatedKey = nil
 
 	expectedEnv := &Env{
-		environ: map[string]string{
+		keyToValue: map[string]string{
 			emptyKey:  "",
 			filledKey: "value",
 		},

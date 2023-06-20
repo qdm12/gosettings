@@ -16,7 +16,7 @@ import (
 func (e *Env) NetipAddr(envKey string, options ...Option) (
 	addr netip.Addr, err error) {
 	parseOptions := e.makeParseOptions(options)
-	return parse.NetipAddr(e.environ, envKey, parseOptions...)
+	return parse.NetipAddr(e.keyToValue, envKey, parseOptions...)
 }
 
 // CSVNetipAddresses returns a slice of netip.Addr from a comma separated
@@ -38,7 +38,7 @@ func (e *Env) NetipAddr(envKey string, options ...Option) (
 func (e *Env) CSVNetipAddresses(envKey string, options ...Option) (
 	prefixes []netip.Addr, err error) {
 	parseOptions := e.makeParseOptions(options)
-	return parse.CSVNetipAddresses(e.environ, envKey, parseOptions...)
+	return parse.CSVNetipAddresses(e.keyToValue, envKey, parseOptions...)
 }
 
 // CSVNetipPrefixes returns a slice of netip.Prefix from a comma separated
@@ -60,5 +60,5 @@ func (e *Env) CSVNetipAddresses(envKey string, options ...Option) (
 func (e *Env) CSVNetipPrefixes(envKey string, options ...Option) (
 	prefixes []netip.Prefix, err error) {
 	parseOptions := e.makeParseOptions(options)
-	return parse.CSVNetipPrefixes(e.environ, envKey, parseOptions...)
+	return parse.CSVNetipPrefixes(e.keyToValue, envKey, parseOptions...)
 }
