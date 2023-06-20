@@ -7,29 +7,29 @@ import (
 )
 
 // DurationPtr returns a pointer to a `time.Duration`
-// from an environment variable value.
+// from the value found at the given key.
 // If the value is not a valid time.Duration string, an error
-// is returned with the environment variable name in its message.
+// is returned with the key in its message.
 // The value is returned as `nil` if:
-//   - the environment variable key given is NOT set.
+//   - the given key is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
-//     environment variable is set and its value is empty.
-func (r *Reader) DurationPtr(envKey string, options ...Option) (
+//     given key is set and its corresponding value is empty.
+func (r *Reader) DurationPtr(key string, options ...Option) (
 	durationPtr *time.Duration, err error) {
 	parseOptions := r.makeParseOptions(options)
-	return parse.DurationPtr(r.keyToValue, envKey, parseOptions...)
+	return parse.DurationPtr(r.keyToValue, key, parseOptions...)
 }
 
-// Duration returns a `time.Duration` from an environment
-// variable value.
+// Duration returns a `time.Duration` from the value found at
+// the given key.
 // If the value is not a valid time.Duration string, an error
-// is returned with the environment variable name in its message.
+// is returned with the key in its message.
 // The value is returned as `0` if:
-//   - the environment variable key given is NOT set.
+//   - the given key is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
-//     environment variable is set and its value is empty.
-func (r *Reader) Duration(envKey string, options ...Option) (
+//     given key is set and its corresponding value is empty.
+func (r *Reader) Duration(key string, options ...Option) (
 	duration time.Duration, err error) {
 	parseOptions := r.makeParseOptions(options)
-	return parse.Duration(r.keyToValue, envKey, parseOptions...)
+	return parse.Duration(r.keyToValue, key, parseOptions...)
 }

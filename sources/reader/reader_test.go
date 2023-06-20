@@ -52,20 +52,20 @@ func Test_New(t *testing.T) {
 	testKeys[notExistsKey] = struct{}{}
 
 	handleDeprecatedKey := (func(oldKey string, currentKey string))(nil)
-	env := New(os.Environ(), handleDeprecatedKey)
+	reader := New(os.Environ(), handleDeprecatedKey)
 
 	// Remove other test irrelevant environment variables
-	for k := range env.keyToValue {
+	for k := range reader.keyToValue {
 		_, isTestKey := testKeys[k]
 		if !isTestKey {
-			delete(env.keyToValue, k)
+			delete(reader.keyToValue, k)
 		}
 	}
 
-	if env.handleDeprecatedKey == nil {
+	if reader.handleDeprecatedKey == nil {
 		t.Error("expected handleDeprecatedKey to be set")
 	}
-	env.handleDeprecatedKey = nil
+	reader.handleDeprecatedKey = nil
 
 	expectedEnv := &Reader{
 		keyToValue: map[string]string{
@@ -74,7 +74,7 @@ func Test_New(t *testing.T) {
 		},
 	}
 
-	if !reflect.DeepEqual(expectedEnv, env) {
-		t.Errorf("expected: %v, got: %v", expectedEnv, env)
+	if !reflect.DeepEqual(expectedEnv, reader) {
+		t.Errorf("expected: %v, got: %v", expectedEnv, reader)
 	}
 }

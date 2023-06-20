@@ -1,11 +1,12 @@
 package reader
 
 // Option is an option to modify the behavior of
-// `env.Get(key string, options ...Option)`.
+// the `Get(key string, options ...Option)` method
+// which is used by all methods.
 type Option func(s *settings)
 
 // ForceLowercase forces the string values read from the
-// environment to be lowercased or not, depending on the
+// reader to be lowercased or not, depending on the
 // `lowercase` argument given.
 func ForceLowercase(lowercase bool) Option {
 	return func(s *settings) {
@@ -14,17 +15,16 @@ func ForceLowercase(lowercase bool) Option {
 }
 
 // AcceptEmpty, if set to true, makes the code distinguish
-// between unset environment variable keys and empty environment
-// variable values. By default, the code does not distinguish
-// between the two cases.
+// between unset keys and empty values.
+// By default, the code does not distinguish between the two cases.
 func AcceptEmpty(accept bool) Option {
 	return func(s *settings) {
 		s.acceptEmpty = &accept
 	}
 }
 
-// RetroKeys specifies a list of environment variable keys
-// that are deprecated and replaced by the current key.
+// RetroKeys specifies a list of keys that are deprecated
+// and replaced by the current key.
 // The oldest retro-compatible key should be placed first
 // in the list of retro keys, so it gets checked first, which
 // is especially important if for example default variable values
