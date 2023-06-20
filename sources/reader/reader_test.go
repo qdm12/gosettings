@@ -51,10 +51,10 @@ func Test_New(t *testing.T) {
 	}
 	testKeys[notExistsKey] = struct{}{}
 
-	settings := Settings{
+	readerSettings := Settings{
 		Environ: os.Environ(),
 	}
-	reader := New(settings)
+	reader := New(readerSettings)
 
 	// Remove other test irrelevant environment variables
 	for k := range reader.keyToValue {
@@ -73,6 +73,10 @@ func Test_New(t *testing.T) {
 		keyToValue: map[string]string{
 			emptyKey:  "",
 			filledKey: "value",
+		},
+		defaultReadSettings: settings{
+			forceLowercase: ptrTo(false),
+			acceptEmpty:    ptrTo(false),
 		},
 	}
 

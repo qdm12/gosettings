@@ -1,6 +1,9 @@
 package reader
 
-import "github.com/qdm12/gosettings/sources/parse"
+import (
+	"github.com/qdm12/gosettings"
+	"github.com/qdm12/gosettings/sources/parse"
+)
 
 // Option is an option to modify the behavior of
 // the `Get(key string, options ...Option)` method
@@ -46,8 +49,16 @@ type settings struct {
 	retroKeys      []string
 }
 
+func (s settings) copy() settings {
+	return settings{
+		forceLowercase: gosettings.CopyPointer(s.forceLowercase),
+		acceptEmpty:    gosettings.CopyPointer(s.acceptEmpty),
+		retroKeys:      gosettings.CopySlice(s.retroKeys),
+	}
+}
+
 func (r *Reader) makeParseOptions(options []Option) (parseOptions []parse.Option) {
-	var settings settings
+	settings := r.defaultReadSettings.copy()
 	for _, option := range options {
 		option(&settings)
 	}
