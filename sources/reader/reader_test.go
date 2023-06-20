@@ -51,8 +51,10 @@ func Test_New(t *testing.T) {
 	}
 	testKeys[notExistsKey] = struct{}{}
 
-	handleDeprecatedKey := (func(oldKey string, currentKey string))(nil)
-	reader := New(os.Environ(), handleDeprecatedKey)
+	settings := Settings{
+		Environ: os.Environ(),
+	}
+	reader := New(settings)
 
 	// Remove other test irrelevant environment variables
 	for k := range reader.keyToValue {

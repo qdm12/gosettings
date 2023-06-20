@@ -13,16 +13,28 @@ type Reader struct {
 // "key=value". The functional argument `handleDeprecatedKey`
 // is called when encountering a deprecated environment variable
 // key, and defaults to a no-op function if left to `nil`.
-func New(environ []string,
-	handleDeprecatedKey func(deprecatedKey string, currentKey string),
-) *Reader {
-	keyToValue := keyToValueFromEnviron(environ)
-	if handleDeprecatedKey == nil {
-		handleDeprecatedKey = func(oldKey string, currentKey string) {}
-	}
+func New(settings Settings) *Reader {
+	settings.setDefaults()
 
+	keyToValue := keyToValueFromEnviron(settings.Environ)
 	return &Reader{
 		keyToValue:          keyToValue,
-		handleDeprecatedKey: handleDeprecatedKey,
+		handleDeprecatedKey: settings.HandleDeprecatedKey,
+	}
+}
+
+// Settings is the settings to create a new reader.
+type Settings struct {
+	// Environ is a slice of environment variable strings,
+	// where each string is in the form "key=value".
+	Environ []string
+	// HandleDeprecatedKey is called when encountering a deprecated
+	// key, and defaults to a no-op function.
+	HandleDeprecatedKey func(deprecatedKey string, currentKey string)
+}
+
+func (s *Settings) setDefaults() {
+	if s.HandleDeprecatedKey == nil { // Note: cannot use DefaultInterface
+		s.HandleDeprecatedKey = func(deprecatedKey string, currentKey string) {}
 	}
 }
