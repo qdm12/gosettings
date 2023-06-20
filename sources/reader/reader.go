@@ -1,7 +1,5 @@
 package reader
 
-import "strings"
-
 // Reader is an environment variables source parser
 // based on functions from the sources/parser package.
 type Reader struct {
@@ -18,16 +16,7 @@ type Reader struct {
 func New(environ []string,
 	handleDeprecatedKey func(deprecatedKey string, currentKey string),
 ) *Reader {
-	keyToValue := make(map[string]string, len(environ))
-	for _, keyValue := range environ {
-		const maxParts = 2
-		parts := strings.SplitN(keyValue, "=", maxParts)
-		if len(parts) != maxParts {
-			panic("invalid environment variable: " + keyValue)
-		}
-		keyToValue[parts[0]] = parts[1]
-	}
-
+	keyToValue := keyToValueFromEnviron(environ)
 	if handleDeprecatedKey == nil {
 		handleDeprecatedKey = func(oldKey string, currentKey string) {}
 	}
