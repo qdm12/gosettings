@@ -11,7 +11,7 @@ type settings struct {
 	forceLowercase      *bool
 	acceptEmpty         *bool
 	deprecatedKeys      []string
-	handleDeprecatedKey func(deprecateKey, currentKey string)
+	handleDeprecatedKey func(source, deprecateKey, currentKey string)
 }
 
 func settingsFromOptions(options []Option) (s settings) {
@@ -29,6 +29,6 @@ func (s *settings) setDefaults() {
 	s.forceLowercase = gosettings.DefaultPointer(s.forceLowercase, true)
 	s.acceptEmpty = gosettings.DefaultPointer(s.acceptEmpty, false)
 	if s.handleDeprecatedKey == nil {
-		s.handleDeprecatedKey = func(deprecateKey, currentKey string) {}
+		s.handleDeprecatedKey = func(source, deprecateKey, currentKey string) {}
 	}
 }

@@ -45,14 +45,6 @@ func (s *Settings) Copy() Settings {
 	}
 }
 
-// MergeWith merges the settings with another settings struct
-// and returns the result as a new settings struct.
-func (s Settings) MergeWith(other Settings) (merged Settings) {
-	merged.Enabled = gosettings.MergeWithPointer(s.Enabled, other.Enabled)
-	merged.Names = gosettings.MergeWithSlice(s.Names, other.Names)
-	return merged
-}
-
 // OverrideWith overrides the settings with another settings struct.
 func (s *Settings) OverrideWith(other Settings) {
 	s.Enabled = gosettings.OverrideWithPointer(s.Enabled, other.Enabled)

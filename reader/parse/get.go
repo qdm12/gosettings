@@ -2,13 +2,13 @@ package parse
 
 import "strings"
 
-// Get returns the value found at the given key in the given
-// keyValues map, as a string pointer.
+// Get returns the first value found at the given key from
+// the given sources in order, as a string pointer.
 //
 // The value is returned as `nil` if:
-//   - the key given is NOT set in the keyValues map.
+//   - the key given is NOT set in any of the sources.
 //   - By default and unless changed by the AcceptEmpty option, if the
-//     key is set in the mapping and its corresponding value is empty.
+//     key is set in one of the sources and its corresponding value is empty.
 //
 // Otherwise, the value may be modified depending on the parse
 // default settings and the parse options given.
@@ -18,7 +18,13 @@ import "strings"
 //   - Trim spaces.
 //   - Trim quotes.
 //   - Force lowercase.
-func Get(keyValues map[string]string, key string, options ...Option) (value *string) {
+func Get(sources []Source, key string, options ...Option) (value *string) {
+	value, _ = get(sources, key, options...)
+	return value
+}
+
+func get(sources []Source, key string, options ...Option) (
+	value *string, sourceKind string) {
 	settings := settingsFromOptions(options)
 
 	keysToTry := make([]string, 0, 1+len(settings.deprecatedKeys))
@@ -29,33 +35,42 @@ func Get(keyValues map[string]string, key string, options ...Option) (value *str
 	keysToTry = append(keysToTry, key)
 
 	var firstKeySet string
+
 	for _, keyToTry := range keysToTry {
-		stringValue, isSet := keyValues[keyToTry]
-		if !isSet {
-			continue
+		for _, sourceToTry := range sources {
+			keyToTry = sourceToTry.KeyTransform(keyToTry)
+			stringValue, isSet := sourceToTry.Get(keyToTry)
+			if !isSet {
+				continue
+			}
+			firstKeySet = keyToTry
+			key = sourceToTry.KeyTransform(key)
+			sourceKind = sourceToTry.String()
+			value = new(string)
+			*value = stringValue
+			break
 		}
-		firstKeySet = key
-		value = new(string)
-		*value = stringValue
-		break
+		if firstKeySet != "" {
+			break
+		}
 	}
 
-	if firstKeySet == "" { // All keys are unset
-		return nil
+	if firstKeySet == "" { // All keys are unset for all sources
+		return nil, sourceKind
 	}
 
 	if firstKeySet != key {
-		settings.handleDeprecatedKey(firstKeySet, key)
+		settings.handleDeprecatedKey(sourceKind, firstKeySet, key)
 	}
 
 	if !*settings.acceptEmpty && *value == "" {
 		// value is set to the empty string, but the empty
 		// string is not accepted so return nil.
-		return nil
+		return nil, sourceKind
 	}
 
 	*value = postProcessValue(*value, settings)
-	return value
+	return value, sourceKind
 }
 
 func postProcessValue(value string, settings settings) string {

@@ -6,7 +6,7 @@
 
 - [gosettings](https://pkg.go.dev/github.com/qdm12/gosettings)
 - [gosettings/validate](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
-- [gosettings/sources/env](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
+- [gosettings/reader](https://pkg.go.dev/github.com/qdm12/gosettings/reader)
 
 Add it to your Go project with:
 
@@ -21,13 +21,12 @@ Features:
 - Define settings struct methods:
   - `Copy`: use `gosettings.CopyPointer` and `gosettings.CopySlice`
   - `SetDefaults`: `gosettings.Default*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
-  - `MergeWith`: `gosettings.MergeWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `OverrideWith`: `gosettings.OverrideWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `Validate`: `validate.*` functions from [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
-- Reading settings from sources:
-  - Environment variables: use `env.New(os.Environ())` with its methods, from [`github.com/qdm12/gosettings/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/sources/env)
+- Reading settings from multiple sources with precedence with [`github.com/qdm12/gosettings/reader`](https://pkg.go.dev/github.com/qdm12/gosettings/reader)
+  - Environment variable implementation: `reader.NewEnv(os.Environ())`
 - Minor feature notes:
-  - No use of `reflect` for performance
+  - No use of `reflect` for better runtime safety
   - Near zero dependency
 
 ## Philosophy
@@ -39,7 +38,7 @@ After having worked with Go and settings from different sources for years, I hav
 Each component has a settings struct, where the zero value of a field should be **meaningless**.
 For example, if the value `0` is allowed for a field, then it must be an `*int` field.
 On the contrary, you could have an `int` field if the zero value `0` is meaningless.
-The reasoning behind this is that you want the zero Go value to be considered as 'unset field' so that the field value can be defaulted, merged with or overridden by another settings struct. See the below interface comments for more details on what this allows.
+The reasoning behind this is that you want the zero Go value to be considered as 'unset field' so that the field value can be defaulted and overridden by another settings struct. See the below interface comments for more details on what this allows.
 
 Next, each of your settings struct should *ideally* implement the following interface:
 
@@ -62,13 +61,6 @@ type Settings interface {
  // Usage:
  // - Copy settings before modifying them with OverrideWith(), to validate them with Validate() before actually using them.
  Copy() Settings
- // MergeWith copies the receiver settings as `merged`, and sets all the unset fields
- // of `merged` to the values of the `other` settings. The receiver should be a VALUE
- // receiver so that it can be used with the generics-based merger settings source:
- // https://github.com/qdm12/gosettings/blob/main/sources/merger
- // Usage:
- // - Read from different settings sources with an order of precedence
- MergeWith(other Settings) (merged Settings)
  // OverrideWith sets all the set values of the other settings to the fields of the receiver settings.
  // Usage:
  // - Update settings at runtime
@@ -102,36 +94,54 @@ In the following Go examples, we use the [example settings implementation](examp
 
 #### Read settings from multiple sources
 
-A quick glimpse on how this works:
+The `Reader` from the [`github.com/qdm12/gosettings/reader`](https://pkg.go.dev/github.com/qdm12/gosettings/reader) package can be used to read and parse settings from one or more sources. A source implements the interface:
+
+```go
+type Source interface {
+ String() string
+ Get(key string) (value string, isSet bool)
+ KeyTransform(key string) string
+}
+```
+
+There are already defined sources such as `reader.Env` for environment variables.
+
+A simple example (runnable [here](examples/reader/main.go)) would be:
 
 ```go
 package main
 
 import (
-  "github.com/qdm12/gosettings/sources/merger"
+ "fmt"
+
+ "github.com/qdm12/gosettings/reader"
 )
 
-type Settings struct {
-  // ...
-}
-
-// ... and Settings methods
-
 func main() {
-  env := NewEnv()
-  flags := NewFlags()
-  merger := merger.New[Settings](flags, env)
-  settings, err := merger.Read()
-  if err != nil {
-    panic(err)
-  }
-  settings.SetDefaults()
+ sourceA := reader.NewEnv([]string{"KEY1=A1"})
+ sourceB := reader.NewEnv([]string{"KEY1=B1", "KEY2=2"})
+ reader := reader.New(reader.Settings{
+  Sources: []reader.Source{sourceA, sourceB},
+ })
 
-  // ...
+ value := reader.String("KEY1")
+ fmt.Println(value) // A1 - source A takes precedence
+
+ n, err := reader.Int("KEY2")
+ if err != nil {
+  panic(err)
+ }
+ fmt.Println(n) // 2 - source A has no value, so source B is used.
 }
 ```
 
-See the [runnable example](examples/merger/main.go) which uses the [example settings implementation](examples/settings/settings.go).
+You can perform more advanced parsing, for example with the methods `BoolPtr`, `CSV`, `Duration`, `Float64`, `Uint16Ptr`, etc.
+
+Each of these parsing methods accept [some options](reader/options.go), notably to:
+
+- Force the string value to be lowercased
+- Accept empty string values as 'set values'
+- Define retro-compatible keys
 
 #### Updating settings at runtime
 

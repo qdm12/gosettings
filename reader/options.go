@@ -2,7 +2,7 @@ package reader
 
 import (
 	"github.com/qdm12/gosettings"
-	"github.com/qdm12/gosettings/sources/parse"
+	"github.com/qdm12/gosettings/reader/parse"
 )
 
 // Option is an option to modify the behavior of
@@ -35,8 +35,8 @@ func AcceptEmpty(accept bool) Option {
 // is especially important if for example default variable values
 // are set in the program or operating system matching more recent keys.
 // The `handleDeprecatedKey` function is called when a deprecated
-// key is used, with the deprecated key and the current key as
-// arguments.
+// key is used, with the source name, the deprecated key and
+// the current key as arguments.
 func RetroKeys(retroKeys ...string) Option {
 	return func(s *settings) {
 		s.retroKeys = retroKeys

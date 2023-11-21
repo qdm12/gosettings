@@ -35,13 +35,21 @@ func DefaultPointer[T any](existing *T, defaultValue T) (result *T) {
 // defaultValue slice argument.
 // Note it is preferrable to use this function for added mutation safety
 // on the result, but one can use DefaultSliceRaw if performance matters.
-func DefaultSlice[T any](existing, other []T) (result []T) {
-	return MergeWithSlice(existing, other)
+func DefaultSlice[T any](existing, defaultValue []T) (result []T) {
+	if existing != nil || defaultValue == nil {
+		return existing
+	}
+	result = make([]T, len(defaultValue))
+	copy(result, defaultValue)
+	return result
 }
 
 // DefaultValidator returns the existing argument if it is valid,
 // otherwise it returns the defaultValue argument.
 func DefaultValidator[T SelfValidator](existing, defaultValue T) ( //nolint:ireturn
 	result T) {
-	return MergeWithValidator(existing, defaultValue)
+	if existing.IsValid() {
+		return existing
+	}
+	return defaultValue
 }

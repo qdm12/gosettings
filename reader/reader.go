@@ -1,21 +1,20 @@
 package reader
 
-import "github.com/qdm12/gosettings"
+import (
+	"os"
 
-// Reader is an environment variables source parser
-// based on functions from the sources/parser package.
+	"github.com/qdm12/gosettings"
+	"github.com/qdm12/gosettings/reader/parse"
+)
+
+// Reader is a settings sources reader and parser.
 type Reader struct {
-	keyToValue          map[string]string
-	handleDeprecatedKey func(deprecatedKey string, currentKey string)
+	sources             []parse.Source
+	handleDeprecatedKey func(source, deprecatedKey, currentKey string)
 	defaultReadSettings settings
 }
 
-// New creates a new environment variables reader
-// and initializes it with the given slice of environment
-// variable strings, where each string is in the form
-// "key=value". The functional argument `handleDeprecatedKey`
-// is called when encountering a deprecated environment variable
-// key, and defaults to a no-op function if left to `nil`.
+// New creates a new reader using the settings given.
 func New(readerSettings Settings) *Reader {
 	readerSettings.setDefaults()
 
@@ -24,9 +23,13 @@ func New(readerSettings Settings) *Reader {
 		defaultOption(&defaultReadSettings)
 	}
 
-	keyToValue := keyToValueFromEnviron(readerSettings.Environ)
+	parseSources := make([]parse.Source, len(readerSettings.Sources))
+	for i, source := range readerSettings.Sources {
+		parseSources[i] = source
+	}
+
 	return &Reader{
-		keyToValue:          keyToValue,
+		sources:             parseSources,
 		handleDeprecatedKey: readerSettings.HandleDeprecatedKey,
 		defaultReadSettings: defaultReadSettings,
 	}
@@ -34,20 +37,25 @@ func New(readerSettings Settings) *Reader {
 
 // Settings is the settings to create a new reader.
 type Settings struct {
-	// Environ is a slice of environment variable strings,
-	// where each string is in the form "key=value".
-	Environ []string
+	// Sources is a slice of sources where a source at
+	// a lower index has a higher priority.
+	// It defaults to:
+	// []reader.Source{reader.NewEnv(os.Environ())}
+	Sources []Source
 	// HandleDeprecatedKey is called when encountering a deprecated
 	// key, and defaults to a no-op function.
-	HandleDeprecatedKey func(deprecatedKey string, currentKey string)
+	HandleDeprecatedKey func(source, deprecatedKey, currentKey string)
 	// DefaultOptions are the default options to use for every method call.
 	// They default to ForceLowercase(false), AcceptEmpty(false).
 	DefaultOptions []Option
 }
 
 func (s *Settings) setDefaults() {
+	s.Sources = gosettings.DefaultSlice(s.Sources,
+		[]Source{NewEnv(os.Environ())})
+
 	if s.HandleDeprecatedKey == nil { // Note: cannot use DefaultInterface
-		s.HandleDeprecatedKey = func(deprecatedKey string, currentKey string) {}
+		s.HandleDeprecatedKey = func(source, deprecatedKey, currentKey string) {}
 	}
 	s.DefaultOptions = gosettings.DefaultSlice(s.DefaultOptions,
 		[]Option{ForceLowercase(false), AcceptEmpty(false)})

@@ -1,3 +1,7 @@
+// Package parse provides generic functions to parse values
+// from strings found from given sources interfaces.
+// It essentially exists due to its use of generics, where its
+// sibling package reader is not using generics.
 package parse
 
 import (
