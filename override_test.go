@@ -2,14 +2,15 @@ package gosettings
 
 import "testing"
 
-func Test_OverrideWithInterface(t *testing.T) {
+func Test_OverrideWithComparable(t *testing.T) {
 	t.Parallel()
 
 	t.Run("no_type_assertion_needed", func(t *testing.T) {
 		t.Parallel()
 
 		var existing testInterface
-		existing = OverrideWithInterface(existing, &testInterfaceImplA{})
+		existing = OverrideWithComparable[testInterface](
+			existing, &testInterfaceImplA{})
 		existing.F() // make use of variable
 	})
 
@@ -40,7 +41,7 @@ func Test_OverrideWithInterface(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			result := OverrideWithInterface(testCase.existing, testCase.other)
+			result := OverrideWithComparable(testCase.existing, testCase.other)
 			if result != testCase.result {
 				t.Errorf("expected %v, got %v", testCase.result, result)
 			}

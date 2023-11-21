@@ -3,10 +3,16 @@
 
 package gosettings
 
-// OverrideWithNumber returns the other argument if it is not zero,
-// otherwise it returns the existing argument.
-func OverrideWithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
-	if other == 0 {
+// OverrideWithComparable returns the other argument if it is not
+// the zero value, otherwise it returns the existing argument.
+// If used with an interface and an implementation of the interface,
+// it must be instantiated with the interface type, for example:
+// variable := OverrideWithComparable[Interface](variable, &implementation{})
+// Avoid using this function for non-interface pointers, use OverrideWithPointer
+// instead to create a new pointer.
+func OverrideWithComparable[T comparable](existing, other T) (result T) { //nolint:ireturn
+	var zero T
+	if other == zero {
 		return existing
 	}
 	return other
@@ -15,8 +21,7 @@ func OverrideWithNumber[T Number](existing, other T) (result T) { //nolint:iretu
 // OverrideWithPointer returns the existing argument if the other argument
 // is nil. Otherwise it returns a new pointer to the copied value
 // of the other argument value, for added mutation safety.
-// For interfaces where the underlying type is not known,
-// use OverrideWithInterface instead.
+// To override an interface and an implementation, use OverrideWithComparable.
 func OverrideWithPointer[T any](existing, other *T) (result *T) {
 	if other == nil {
 		return existing
@@ -24,29 +29,6 @@ func OverrideWithPointer[T any](existing, other *T) (result *T) {
 	result = new(T)
 	*result = *other
 	return result
-}
-
-// OverrideWithInterface returns the other argument if it is not nil,
-// otherwise it returns the existing argument.
-// Note you should NOT use this function with concrete pointers
-// such as *int, and only use this for interfaces.
-// This function is not type safe nor mutation safe, be careful.
-// If `other` does not implement the interface of `existing`, this will panic.
-func OverrideWithInterface[T any](existing T, other any) ( //nolint:ireturn
-	result T) {
-	if other == nil {
-		return existing
-	}
-	return other.(T) //nolint:forcetypeassert
-}
-
-// OverrideWithString returns the other string argument if it is not empty,
-// otherwise it returns the existing string argument.
-func OverrideWithString(existing, other string) (result string) {
-	if other == "" {
-		return existing
-	}
-	return other
 }
 
 // OverrideWithSlice returns the existing slice argument if the other
@@ -61,15 +43,6 @@ func OverrideWithSlice[T any](existing, other []T) (result []T) {
 	result = make([]T, len(other))
 	copy(result, other)
 	return result
-}
-
-// OverrideWithSliceRaw returns the other slice argument if it is not nil,
-// otherwise it returns the existing slice argument.
-func OverrideWithSliceRaw[T any](existing, other []T) (result []T) {
-	if other == nil {
-		return existing
-	}
-	return other
 }
 
 // OverrideWithValidator returns the existing argument if other is not valid,
