@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_DefaultInterface(t *testing.T) {
+func Test_DefaultComparable(t *testing.T) {
 	t.Parallel()
 
 	t.Run("no_type_assertion_needed", func(t *testing.T) {
@@ -14,7 +14,7 @@ func Test_DefaultInterface(t *testing.T) {
 		// Requirement to instantiate the function with the
 		// interface type:
 		var existing testInterface
-		existing = DefaultInterface[testInterface](existing, &testInterfaceImplA{})
+		existing = DefaultComparable[testInterface](existing, &testInterfaceImplA{})
 		existing.F() // make use of `existing` variable
 	})
 
@@ -50,7 +50,7 @@ func Test_DefaultInterface(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			result := DefaultInterface(testCase.existing, testCase.defaultValue)
+			result := DefaultComparable(testCase.existing, testCase.defaultValue)
 			if result != testCase.result {
 				t.Errorf("expected %v, got %v", testCase.result, result)
 			}
