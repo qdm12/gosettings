@@ -28,6 +28,7 @@ func (s *settings) setDefaults() {
 	s.trimQuotes = gosettings.DefaultPointer(s.trimQuotes, true)
 	s.forceLowercase = gosettings.DefaultPointer(s.forceLowercase, true)
 	s.acceptEmpty = gosettings.DefaultPointer(s.acceptEmpty, false)
-	s.handleDeprecatedKey = gosettings.DefaultInterface(s.handleDeprecatedKey,
-		func(deprecateKey, currentKey string) {})
+	if s.handleDeprecatedKey == nil {
+		s.handleDeprecatedKey = func(deprecateKey, currentKey string) {}
+	}
 }
