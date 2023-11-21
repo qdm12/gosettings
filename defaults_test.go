@@ -11,9 +11,11 @@ func Test_DefaultInterface(t *testing.T) {
 	t.Run("no_type_assertion_needed", func(t *testing.T) {
 		t.Parallel()
 
+		// Requirement to instantiate the function with the
+		// interface type:
 		var existing testInterface
-		existing = DefaultInterface(existing, &testInterfaceImplA{})
-		existing.F() // make use of variable
+		existing = DefaultInterface[testInterface](existing, &testInterfaceImplA{})
+		existing.F() // make use of `existing` variable
 	})
 
 	testCases := map[string]struct {

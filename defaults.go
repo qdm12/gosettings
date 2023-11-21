@@ -11,8 +11,7 @@ func DefaultNumber[T Number](existing, other T) (result T) { //nolint:ireturn
 
 // DefaultPointer returns the existing argument if it is not nil.
 // Otherwise it returns a new pointer to the defaultValue argument.
-// For interfaces where the underlying type is not known,
-// use DefaultInterface instead.
+// To default an interface to an implementation, use DefaultPointerRaw.
 func DefaultPointer[T any](existing *T, defaultValue T) (result *T) {
 	if existing != nil {
 		return existing
@@ -35,17 +34,17 @@ func DefaultPointerRaw[T any](existing, defaultValue *T) (result *T) {
 
 // DefaultInterface returns the existing argument if it is not nil,
 // otherwise it returns the defaultValue argument.
-// Note you should NOT use this function with concrete pointers
-// such as *int, and only use this for interfaces.
-// This function is not type safe nor mutation safe, be careful.
-// If `defaultValue` does not implement the interface of `existing`, this will panic.
-func DefaultInterface[T any](existing T, defaultValue any) ( //nolint:ireturn
+// If used with an interface and an implementation of the interface,
+// it must be instantiated with the interface type, for example:
+// variable := DefaultInterface[Interface](variable, &implementation{})
+// Avoid using this function for non-interface types.
+func DefaultInterface[T comparable](existing, defaultValue T) ( //nolint:ireturn
 	result T) {
-	mergeResult := MergeWithInterface(existing, defaultValue)
-	if mergeResult == nil {
-		return result
+	var zero T
+	if existing != zero {
+		return existing
 	}
-	return mergeResult.(T) //nolint:forcetypeassert
+	return defaultValue
 }
 
 // DefaultString returns the existing string argument if it is not empty,
