@@ -3,10 +3,16 @@
 
 package gosettings
 
-// MergeWithNumber returns the existing argument if it is not zero,
-// otherwise it returns the other argument.
-func MergeWithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
-	if existing != 0 {
+// MergeWithComparable returns the existing argument if it is
+// not the zero value, otherwise it returns the other argument.
+// If used with an interface and an implementation of the interface,
+// it must be instantiated with the interface type, for example:
+// variable := MergeWithComparable[Interface](variable, &implementation{})
+// Avoid using this function for non-interface pointers, use MergeWithPointer
+// instead to create a new pointer.
+func MergeWithComparable[T comparable](existing, other T) (result T) { //nolint:ireturn
+	var zero T
+	if existing != zero {
 		return existing
 	}
 	return other
@@ -15,8 +21,7 @@ func MergeWithNumber[T Number](existing, other T) (result T) { //nolint:ireturn
 // MergeWithPointer returns the existing argument if it is not nil.
 // Otherwise it returns a new pointer to the copied value of the
 // other argument value, for added mutation safety.
-// For interfaces where the underlying type is not known,
-// use MergeWithInterface instead.
+// To merge an interface and an implementation, use MergeWithComparable.
 func MergeWithPointer[T any](existing, other *T) (result *T) {
 	if existing != nil || other == nil {
 		return existing
@@ -24,29 +29,6 @@ func MergeWithPointer[T any](existing, other *T) (result *T) {
 	result = new(T)
 	*result = *other
 	return result
-}
-
-// MergeWithInterface returns the existing argument if it is not nil,
-// otherwise it returns the other argument.
-// Note you should NOT use this function with concrete pointers
-// such as *int, and only use this for interfaces.
-// This function is not type safe nor mutation safe, be careful.
-// If `existing` does not implement the interface of `other`, this will panic.
-func MergeWithInterface[T any](existing any, other T) ( //nolint:ireturn
-	result T) {
-	if existing != nil {
-		return existing.(T) //nolint:forcetypeassert
-	}
-	return other
-}
-
-// MergeWithString returns the existing string argument if it is not empty,
-// otherwise it returns the other string argument.
-func MergeWithString(existing, other string) (result string) {
-	if existing != "" {
-		return existing
-	}
-	return other
 }
 
 // MergeWithSlice returns the existing slice argument if is not nil.
@@ -61,15 +43,6 @@ func MergeWithSlice[T any](existing, other []T) (result []T) {
 	result = make([]T, len(other))
 	copy(result, other)
 	return result
-}
-
-// MergeWithSliceRaw returns the existing slice argument if it is not nil,
-// otherwise it returns the other slice argument.
-func MergeWithSliceRaw[T any](existing, other []T) (result []T) {
-	if existing != nil {
-		return existing
-	}
-	return other
 }
 
 // MergeWithValidator returns the existing argument if it is valid,

@@ -11,7 +11,7 @@ type settings struct {
 }
 
 func (s settings) MergeWith(other settings) (merged settings) {
-	merged.x = gosettings.MergeWithNumber(s.x, other.x)
+	merged.x = gosettings.MergeWithComparable(s.x, other.x)
 	return merged
 }
 

@@ -2,14 +2,15 @@ package gosettings
 
 import "testing"
 
-func Test_MergeWithInterface(t *testing.T) {
+func Test_MergeWithComparable(t *testing.T) {
 	t.Parallel()
 
 	t.Run("no_type_assertion_needed", func(t *testing.T) {
 		t.Parallel()
 
 		var existing testInterface
-		existing = MergeWithInterface(existing, &testInterfaceImplA{})
+		existing = MergeWithComparable[testInterface](
+			existing, &testInterfaceImplA{})
 		existing.F() // make use of variable
 	})
 
@@ -41,7 +42,7 @@ func Test_MergeWithInterface(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			result := MergeWithInterface(testCase.existing, testCase.other)
+			result := MergeWithComparable(testCase.existing, testCase.other)
 			if result != testCase.result {
 				t.Errorf("expected %v, got %v", testCase.result, result)
 			}
