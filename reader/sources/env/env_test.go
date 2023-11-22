@@ -1,4 +1,4 @@
-package reader
+package env
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_NewEnv(t *testing.T) {
+func Test_New(t *testing.T) {
 	t.Parallel()
 
 	testKeys := make(map[string]struct{})
@@ -23,7 +23,7 @@ func Test_NewEnv(t *testing.T) {
 	transformedLowercaseKey := strings.ToUpper(lowercaseKey)
 	testKeys[transformedLowercaseKey] = struct{}{}
 
-	env := NewEnv(os.Environ())
+	env := New(os.Environ())
 
 	// Remove other test irrelevant environment variables
 	for k := range env.keyToValue {
@@ -33,7 +33,7 @@ func Test_NewEnv(t *testing.T) {
 		}
 	}
 
-	expectedEnv := &Env{
+	expectedEnv := &Source{
 		keyToValue: map[string]string{
 			emptyKey:                "",
 			filledKey:               "value",
@@ -49,7 +49,7 @@ func Test_NewEnv(t *testing.T) {
 func Test_Env_String(t *testing.T) {
 	t.Parallel()
 
-	env := &Env{}
+	env := &Source{}
 	someErrorMessage := fmt.Sprintf("%s %s: %s",
 		env, "ENV_KEY", "some problem")
 	const expectedErrorMessage = "environment variable ENV_KEY: " +
@@ -64,22 +64,22 @@ func Test_Env_Get(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {
-		env   *Env
+		env   *Source
 		key   string
 		value string
 		isSet bool
 	}{
 		"key_not_found": {
-			env: NewEnv([]string{}),
+			env: New([]string{}),
 			key: "KEY",
 		},
 		"empty_value": {
-			env:   NewEnv([]string{"KEY="}),
+			env:   New([]string{"KEY="}),
 			key:   "KEY",
 			isSet: true,
 		},
 		"non_empty_value": {
-			env:   NewEnv([]string{"KEY=value"}),
+			env:   New([]string{"KEY=value"}),
 			key:   "KEY",
 			value: "value",
 			isSet: true,
@@ -126,11 +126,46 @@ func Test_Env_KeyTransform(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			env := &Env{}
+			env := &Source{}
 			newKey := env.KeyTransform(testCase.key)
 			if newKey != testCase.newKey {
 				t.Errorf("expected %s, got %s", testCase.newKey, newKey)
 			}
 		})
 	}
+}
+
+// setTestEnv is used to set environment variables in
+// parallel tests, and restores or clears set variables
+// when the test finishes.
+// The environment variable key is computed as:
+// keyPrefix + "_" + UPPER(test name)
+// and is returned to the caller.
+func setTestEnv(t *testing.T, keyPrefix, value string) (key string) {
+	t.Helper()
+	keySuffix := "_" + strings.ToUpper(t.Name())
+	key = keyPrefix + keySuffix
+	existing, wasSet := os.LookupEnv(key)
+
+	t.Cleanup(func() {
+		var err error
+		if wasSet {
+			if strings.HasSuffix(existing, keySuffix) {
+				// the cleanup associated with the first set
+				// will take care of cleaning up.
+				return
+			}
+			err = os.Setenv(key, existing)
+		} else {
+			err = os.Unsetenv(key)
+		}
+		if err != nil {
+			t.Error(err)
+		}
+	})
+	err := os.Setenv(key, value) //nolint:tenv
+	if err != nil {
+		t.Fatal(err)
+	}
+	return key
 }

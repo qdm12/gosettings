@@ -24,7 +24,7 @@ Features:
   - `OverrideWith`: `gosettings.OverrideWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `Validate`: `validate.*` functions from [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
 - Reading settings from multiple sources with precedence with [`github.com/qdm12/gosettings/reader`](https://pkg.go.dev/github.com/qdm12/gosettings/reader)
-  - Environment variable implementation: `reader.NewEnv(os.Environ())`
+  - Environment variable implementation `env.New(os.Environ())` in subpackage [`github.com/qdm12/gosettings/reader/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/reader/sources/env)
 - Minor feature notes:
   - No use of `reflect` for better runtime safety
   - Near zero dependency
@@ -115,11 +115,12 @@ import (
  "fmt"
 
  "github.com/qdm12/gosettings/reader"
+ "github.com/qdm12/gosettings/reader/sources/env"
 )
 
 func main() {
- sourceA := reader.NewEnv([]string{"KEY1=A1"})
- sourceB := reader.NewEnv([]string{"KEY1=B1", "KEY2=2"})
+ sourceA := env.New([]string{"KEY1=A1"})
+ sourceB := env.New([]string{"KEY1=B1", "KEY2=2"})
  reader := reader.New(reader.Settings{
   Sources: []reader.Source{sourceA, sourceB},
  })

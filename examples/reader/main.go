@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	"github.com/qdm12/gosettings/reader"
+	"github.com/qdm12/gosettings/reader/sources/env"
 )
 
 func main() {
-	sourceA := reader.NewEnv([]string{"KEY1=A1"})
-	sourceB := reader.NewEnv([]string{"KEY1=B1", "KEY2=2"})
+	sourceA := env.New([]string{"KEY1=A1"})
+	sourceB := env.New([]string{"KEY1=B1", "KEY2=2"})
 	reader := reader.New(reader.Settings{
 		Sources: []reader.Source{sourceA, sourceB},
 	})
