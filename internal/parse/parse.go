@@ -132,6 +132,11 @@ func parseUnsigned[T constraints.Unsigned](value string, min, max uint64) ( //no
 	return T(xUint64), nil
 }
 
+func parseFloat32(value string) (output float32, err error) {
+	const min, max = 0, math.MaxFloat32
+	return parseFloat[float32](value, min, max)
+}
+
 func parseFloat64(value string) (output float64, err error) {
 	const min, max = 0, math.MaxFloat64
 	return parseFloat[float64](value, min, max)
