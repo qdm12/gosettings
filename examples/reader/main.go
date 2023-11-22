@@ -5,21 +5,25 @@ import (
 
 	"github.com/qdm12/gosettings/reader"
 	"github.com/qdm12/gosettings/reader/sources/env"
+	"github.com/qdm12/gosettings/reader/sources/flag"
 )
 
 func main() {
-	sourceA := env.New([]string{"KEY1=A1"})
-	sourceB := env.New([]string{"KEY1=B1", "KEY2=2"})
+	flagSource := flag.New([]string{"program", "--key1=A"})
+	envSource := env.New([]string{"KEY1=B", "KEY2=2"})
 	reader := reader.New(reader.Settings{
-		Sources: []reader.Source{sourceA, sourceB},
+		Sources: []reader.Source{flagSource, envSource},
 	})
 
 	value := reader.String("KEY1")
-	fmt.Println(value) // A1 - source A takes precedence
+	// flag source takes precedence
+	fmt.Println(value) // Prints "A"
 
 	n, err := reader.Int("KEY2")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(n) // 2 - source A has no value, so source B is used.
+	// flag source has no value, so the environment
+	// variable source is used.
+	fmt.Println(n) // Prints "2"
 }
