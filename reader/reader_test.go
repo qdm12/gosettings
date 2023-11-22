@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/qdm12/gosettings/reader/parse"
+	"github.com/qdm12/gosettings/internal/parse"
 )
 
 func Test_New(t *testing.T) {

@@ -3,7 +3,7 @@ package reader
 import (
 	"net/netip"
 
-	"github.com/qdm12/gosettings/reader/parse"
+	"github.com/qdm12/gosettings/internal/parse"
 )
 
 // NetipAddr returns a netip.Addr from the value found at the given key.

@@ -3,7 +3,7 @@ package reader
 import (
 	"time"
 
-	"github.com/qdm12/gosettings/reader/parse"
+	"github.com/qdm12/gosettings/internal/parse"
 )
 
 // DurationPtr returns a pointer to a `time.Duration`

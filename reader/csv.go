@@ -1,6 +1,6 @@
 package reader
 
-import "github.com/qdm12/gosettings/reader/parse"
+import "github.com/qdm12/gosettings/internal/parse"
 
 // CSVInt returns a slice of int from a comma separated value
 // found at the given key and returns an error if any value

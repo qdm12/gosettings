@@ -1,7 +1,7 @@
 package reader
 
 import (
-	"github.com/qdm12/gosettings/reader/parse"
+	"github.com/qdm12/gosettings/internal/parse"
 )
 
 // Get returns a value found at the given key as a string pointer.

@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/qdm12/gosettings"
-	"github.com/qdm12/gosettings/reader/parse"
+	"github.com/qdm12/gosettings/internal/parse"
 	"github.com/qdm12/gosettings/reader/sources/env"
 )
 
