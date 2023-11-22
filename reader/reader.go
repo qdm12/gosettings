@@ -6,6 +6,7 @@ import (
 	"github.com/qdm12/gosettings"
 	"github.com/qdm12/gosettings/internal/parse"
 	"github.com/qdm12/gosettings/reader/sources/env"
+	"github.com/qdm12/gosettings/reader/sources/flag"
 )
 
 // Reader is a settings sources reader and parser.
@@ -41,7 +42,7 @@ type Settings struct {
 	// Sources is a slice of sources where a source at
 	// a lower index has a higher priority.
 	// It defaults to:
-	// []reader.Source{env.New(os.Environ())}
+	// []reader.Source{flag.New(os.Args), env.New(os.Environ())}
 	Sources []Source
 	// HandleDeprecatedKey is called when encountering a deprecated
 	// key, and defaults to a no-op function.
@@ -53,7 +54,7 @@ type Settings struct {
 
 func (s *Settings) setDefaults() {
 	s.Sources = gosettings.DefaultSlice(s.Sources,
-		[]Source{env.New(os.Environ())})
+		[]Source{flag.New(os.Args), env.New(os.Environ())})
 
 	if s.HandleDeprecatedKey == nil { // Note: cannot use DefaultInterface
 		s.HandleDeprecatedKey = func(source, deprecatedKey, currentKey string) {}
