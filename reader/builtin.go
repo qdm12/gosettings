@@ -125,9 +125,9 @@ func (r *Reader) Int64(key string, options ...Option) (n int64, err error) {
 //   - the given key is NOT set.
 //   - By default and unless changed by the AllowEmpty option, if the
 //     given key is set and its corresponding value is empty.
-func (r *Reader) Uint(key string, options ...Option) (n int, err error) {
+func (r *Reader) Uint(key string, options ...Option) (n uint, err error) {
 	parseOptions := r.makeParseOptions(options)
-	return parse.Int(r.sources, key, parseOptions...)
+	return parse.Uint(r.sources, key, parseOptions...)
 }
 
 // Uint8 returns an `uint8` from the value found at the given key.
