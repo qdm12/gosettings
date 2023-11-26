@@ -62,9 +62,31 @@ func (r *Reader) NetipPrefix(key string, options ...Option) (
 //   - Trim quotes.
 //   - Force lowercase.
 func (r *Reader) CSVNetipAddresses(key string, options ...Option) (
-	prefixes []netip.Addr, err error) {
+	addresses []netip.Addr, err error) {
 	parseOptions := r.makeParseOptions(options)
 	return parse.CSVNetipAddresses(r.sources, key, parseOptions...)
+}
+
+// CSVNetipAddrPorts returns a slice of netip.AddrPort from a
+// comma separated value found at the given key and returns an
+// error if any value is not a valid netip.AddrPort string.
+//
+// The slice is returned as `nil` if:
+//   - the given key is NOT set.
+//   - By default and unless changed by the AcceptEmpty option,
+//     if the key is set and its corresponding value is empty.
+//
+// The entire CSV string value may be modified depending on the
+// parse default settings and the parse options given.
+// The parse default settings are to:
+//   - Trim line endings suffixes \r\n and \n.
+//   - Trim spaces.
+//   - Trim quotes.
+//   - Force lowercase.
+func (r *Reader) CSVNetipAddrPorts(key string, options ...Option) (
+	addrPorts []netip.AddrPort, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.CSVNetipAddrPorts(r.sources, key, parseOptions...)
 }
 
 // CSVNetipPrefixes returns a slice of netip.Prefix from a comma separated value
