@@ -19,6 +19,19 @@ func (r *Reader) NetipAddr(key string, options ...Option) (
 	return parse.NetipAddr(r.sources, key, parseOptions...)
 }
 
+// NetipPrefix returns a netip.Prefix from the value found at the given key.
+// If the value is not a valid netip.Prefix string, an error is returned
+// with the source and key in its message.
+// The value is returned as the empty invalid `netip.Prefix{}` if:
+//   - the given key is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     given key is set and its corresponding value is empty.
+func (r *Reader) NetipPrefix(key string, options ...Option) (
+	addr netip.Prefix, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.NetipPrefix(r.sources, key, parseOptions...)
+}
+
 // CSVNetipAddresses returns a slice of netip.Addr from a comma separated value
 // found at the given key and returns an error if any value
 // is not a valid netip.Addr string.

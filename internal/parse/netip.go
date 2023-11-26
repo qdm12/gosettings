@@ -17,6 +17,19 @@ func NetipAddr(sources []Source, key string,
 	return GetParse(sources, key, netip.ParseAddr, options...)
 }
 
+// NetipPrefix returns a netip.Prefix from the first value
+// found at the given key from the given sources in order.
+// If the value is not a valid netip.Prefix string, an error is returned
+// with the key name and kind (source) in its message.
+// The value is returned as the empty invalid `netip.Prefix{}` if:
+//   - the key given is NOT set in any of the sources.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     key is set and its corresponding value is empty.
+func NetipPrefix(sources []Source, key string,
+	options ...Option) (addr netip.Prefix, err error) {
+	return GetParse(sources, key, netip.ParsePrefix, options...)
+}
+
 // CSVNetipAddresses returns a slice of netip.Addr from the
 // first comma separated string value found at the given key
 // from the given sources in order, and returns an error if
