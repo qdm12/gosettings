@@ -19,6 +19,19 @@ func (r *Reader) NetipAddr(key string, options ...Option) (
 	return parse.NetipAddr(r.sources, key, parseOptions...)
 }
 
+// NetipAddrPort returns a netip.AddrPort from the value found at the given key.
+// If the value is not a valid netip.AddrPort string, an error is returned
+// with the source and key in its message.
+// The value is returned as the empty invalid `netip.AddrPort{}` if:
+//   - the given key is NOT set.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     given key is set and its corresponding value is empty.
+func (r *Reader) NetipAddrPort(key string, options ...Option) (
+	addr netip.AddrPort, err error) {
+	parseOptions := r.makeParseOptions(options)
+	return parse.NetipAddrPort(r.sources, key, parseOptions...)
+}
+
 // NetipPrefix returns a netip.Prefix from the value found at the given key.
 // If the value is not a valid netip.Prefix string, an error is returned
 // with the source and key in its message.

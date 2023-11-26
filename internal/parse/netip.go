@@ -17,6 +17,19 @@ func NetipAddr(sources []Source, key string,
 	return GetParse(sources, key, netip.ParseAddr, options...)
 }
 
+// NetipAddrPort returns a netip.AddrPort from the first value
+// found at the given key from the given sources in order.
+// If the value is not a valid netip.AddrPort string, an error is returned
+// with the source and key in its message.
+// The value is returned as the empty invalid `netip.AddrPort{}` if:
+//   - the key given is NOT set in any of the sources.
+//   - By default and unless changed by the AllowEmpty option, if the
+//     key is set and its corresponding value is empty.
+func NetipAddrPort(sources []Source, key string,
+	options ...Option) (addrPort netip.AddrPort, err error) {
+	return GetParse(sources, key, netip.ParseAddrPort, options...)
+}
+
 // NetipPrefix returns a netip.Prefix from the first value
 // found at the given key from the given sources in order.
 // If the value is not a valid netip.Prefix string, an error is returned
