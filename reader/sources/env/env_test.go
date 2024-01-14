@@ -23,7 +23,11 @@ func Test_New(t *testing.T) {
 	transformedLowercaseKey := strings.ToUpper(lowercaseKey)
 	testKeys[transformedLowercaseKey] = struct{}{}
 
-	env := New(os.Environ())
+	settings := Settings{
+		Environ: os.Environ(),
+	}
+
+	env := New(settings)
 
 	// Remove other test irrelevant environment variables
 	for k := range env.keyToValue {
@@ -70,16 +74,16 @@ func Test_Env_Get(t *testing.T) {
 		isSet bool
 	}{
 		"key_not_found": {
-			env: New([]string{}),
+			env: New(Settings{Environ: []string{}}),
 			key: "KEY",
 		},
 		"empty_value": {
-			env:   New([]string{"KEY="}),
+			env:   New(Settings{Environ: []string{"KEY="}}),
 			key:   "KEY",
 			isSet: true,
 		},
 		"non_empty_value": {
-			env:   New([]string{"KEY=value"}),
+			env:   New(Settings{Environ: []string{"KEY=value"}}),
 			key:   "KEY",
 			value: "value",
 			isSet: true,

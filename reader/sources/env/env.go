@@ -9,6 +9,7 @@ import (
 // method.
 type Source struct {
 	keyToValue map[string]string
+	keyPrefix  string
 }
 
 // New creates a new environment variable source
@@ -17,12 +18,14 @@ type Source struct {
 // Environ values with no '=' sign are ignored.
 // All environment variable keys read are eventually
 // transformed using the KeyTransform method.
-func New(environ []string) (source *Source) {
+func New(settings Settings) (source *Source) {
+	settings.setDefaults()
 	source = &Source{
-		keyToValue: make(map[string]string, len(environ)),
+		keyToValue: make(map[string]string, len(settings.Environ)),
+		keyPrefix:  settings.KeyPrefix,
 	}
 
-	for _, keyValue := range environ {
+	for _, keyValue := range settings.Environ {
 		const maxParts = 2
 		parts := strings.SplitN(keyValue, "=", maxParts)
 		if len(parts) != maxParts {
@@ -53,8 +56,10 @@ func (s *Source) Get(key string) (value string, isSet bool) {
 // variable key. It notably:
 // - Changes all characters to be uppercase
 // - Replaces all dashes with underscores.
+// - Prefixes the key with the KeyPrefix field, without modifying the prefix.
 func (s *Source) KeyTransform(key string) (newKey string) {
 	newKey = strings.ToUpper(key)
 	newKey = strings.ReplaceAll(newKey, "-", "_")
+	newKey = s.keyPrefix + newKey
 	return newKey
 }

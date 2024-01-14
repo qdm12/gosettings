@@ -10,7 +10,7 @@ import (
 
 func main() {
 	flagSource := flag.New([]string{"program", "--key1=A"})
-	envSource := env.New([]string{"KEY1=B", "KEY2=2"})
+	envSource := env.New(env.Settings{Environ: []string{"KEY1=B", "KEY2=2"}})
 	reader := reader.New(reader.Settings{
 		Sources: []reader.Source{flagSource, envSource},
 	})

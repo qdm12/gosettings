@@ -24,7 +24,7 @@ Features:
   - `OverrideWith`: `gosettings.OverrideWith*` functions (see [pkg.go.dev/github.com/qdm12/gosettings](https://pkg.go.dev/github.com/qdm12/gosettings))
   - `Validate`: `validate.*` functions from [`github.com/qdm12/gosettings/validate`](https://pkg.go.dev/github.com/qdm12/gosettings/validate)
 - Reading settings from multiple sources with precedence with [`github.com/qdm12/gosettings/reader`](https://pkg.go.dev/github.com/qdm12/gosettings/reader)
-  - Environment variable implementation `env.New(os.Environ())` in subpackage [`github.com/qdm12/gosettings/reader/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/reader/sources/env)
+  - Environment variable implementation `env.New(env.Settings{Environ: os.Environ()})` in subpackage [`github.com/qdm12/gosettings/reader/sources/env`](https://pkg.go.dev/github.com/qdm12/gosettings/reader/sources/env)
   - Flag implementation `flag.New(os.Args)` in subpackage [`github.com/qdm12/gosettings/reader/sources/flag`](https://pkg.go.dev/github.com/qdm12/gosettings/reader/sources/flag)
 - Minor feature notes:
   - No use of `reflect` for better runtime safety
@@ -111,7 +111,7 @@ A simple example (runnable [here](examples/reader/main.go)) would be:
 
 ```go
 flagSource := flag.New([]string{"program", "--key1=A"})
-envSource := env.New([]string{"KEY1=B", "KEY2=2"})
+envSource := env.New(env.Settings{Environ: []string{"KEY1=B", "KEY2=2"}})
 reader := reader.New(reader.Settings{
   Sources: []reader.Source{flagSource, envSource},
 })

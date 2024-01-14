@@ -42,7 +42,7 @@ type Settings struct {
 	// Sources is a slice of sources where a source at
 	// a lower index has a higher priority.
 	// It defaults to:
-	// []reader.Source{flag.New(os.Args), env.New(os.Environ())}
+	// []reader.Source{flag.New(os.Args), env.New(env.Settings{Environ: os.Environ()})}
 	Sources []Source
 	// HandleDeprecatedKey is called when encountering a deprecated
 	// key, and defaults to a no-op function.
@@ -54,7 +54,7 @@ type Settings struct {
 
 func (s *Settings) setDefaults() {
 	s.Sources = gosettings.DefaultSlice(s.Sources,
-		[]Source{flag.New(os.Args), env.New(os.Environ())})
+		[]Source{flag.New(os.Args), env.New(env.Settings{Environ: os.Environ()})})
 
 	if s.HandleDeprecatedKey == nil { // Note: cannot use DefaultInterface
 		s.HandleDeprecatedKey = func(source, deprecatedKey, currentKey string) {}
