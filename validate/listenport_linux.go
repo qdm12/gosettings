@@ -20,6 +20,10 @@ func getUnprivilegedPortStart() (startPort uint16, err error) {
 	buffer := make([]byte, maxFileSize)
 	file, err := os.Open(filepath)
 	if err != nil {
+		if os.IsNotExist(err) {
+			const defaultUnprivilegedPortStart = 1024
+			return defaultUnprivilegedPortStart, nil
+		}
 		return 0, fmt.Errorf("opening file: %w", err)
 	}
 
