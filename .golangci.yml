@@ -14,6 +14,9 @@ issues:
     - text: "exported: exported var Err*"
       linters:
         - revive
+    - text: "mnd: Magic number: 127, in <argument> detected"
+      linters:
+        - gomnd
     - path: _test\.go
       linters:
         - goerr113

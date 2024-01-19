@@ -5,11 +5,16 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 )
 
-// ListeningAddress validates a listening address string given a user ID `uid`
-// and an optional list of allowed privileged ports.
-func ListeningAddress(address string, uid int, allowedPrivilegedPorts ...uint16) (err error) {
+// ListeningAddress validates a listening address string given a user ID `uid`.
+// If the address is empty, it is valid.
+// If the port is 0, it is valid.
+// If the port is below the start of unprivileged ports, it is valid if the user
+// ID is 0 or -1 (windows); for any other user id, the running program Linux
+// capabilities are checked to see if it can bind to privileged ports.
+func ListeningAddress(address string, uid int) (err error) {
 	if address == "" { // listen on all interfaces on any available port
 		return nil
 	}
@@ -19,41 +24,74 @@ func ListeningAddress(address string, uid int, allowedPrivilegedPorts ...uint16)
 		return fmt.Errorf("splitting host and port: %w", err)
 	}
 
-	return validatePort(portStr, uid, allowedPrivilegedPorts)
+	return validatePort(portStr, uid)
+}
+
+func validatePort(value string, uid int) (err error) {
+	port, err := parsePortString(value)
+	if err != nil {
+		return err
+	}
+
+	isWindows := uid == -1
+	isRoot := uid == 0
+	if port == 0 || isWindows || isRoot {
+		return nil
+	}
+
+	unprivilegedPortStart, err := getUnprivilegedPortStart()
+	if err != nil {
+		return fmt.Errorf("getting unprivileged port start: %w", err)
+	}
+
+	if port >= unprivilegedPortStart {
+		return nil
+	}
+
+	hasCapability, err := hasNetBindServiceCapability()
+	if err != nil {
+		return fmt.Errorf("getting net bind service capability: %w", err)
+	} else if hasCapability {
+		return nil
+	}
+
+	return makePrivilegedPortError(port, uid, unprivilegedPortStart)
 }
 
 var (
 	ErrPortNotAnInteger = errors.New("port value is not an integer")
 	ErrPortTooHigh      = errors.New("port cannot be higher than 65535")
-	ErrPrivilegedPort   = errors.New("cannot use privileged ports (1 to 1023) when running without root")
 )
 
-func validatePort(value string, uid int, allowedPrivilegedPorts []uint16) (err error) {
+func parsePortString(portString string) (port uint16, err error) {
 	const maxPort = 65535
-
 	const base, bitSize = 10, 64
-	portUint, err := strconv.ParseUint(value, base, bitSize)
+	portUint64, err := strconv.ParseUint(portString, base, bitSize)
 	switch {
 	case err != nil:
-		return fmt.Errorf("%w: %s", ErrPortNotAnInteger, value)
-	case portUint > maxPort:
-		return fmt.Errorf("%w: %d", ErrPortTooHigh, portUint)
+		return 0, fmt.Errorf("%w: %s", ErrPortNotAnInteger, portString)
+	case portUint64 > maxPort:
+		return 0, fmt.Errorf("%w: %d", ErrPortTooHigh, portUint64)
 	}
 
-	port := uint16(portUint)
-	const (
-		maxPrivilegedPort = 1023
-		minDynamicPort    = 49151
-	)
-	if port == 0 || port > maxPrivilegedPort ||
-		uid == -1 || uid == 0 { // windows or root uid
-		return nil
+	return uint16(portUint64), nil
+}
+
+var (
+	ErrPrivilegedPort = errors.New("listening on privileged port is not allowed")
+)
+
+func makePrivilegedPortError(port uint16, uid int,
+	unprivilegedPortStart uint16) (err error) {
+	errorDetails := []string{
+		fmt.Sprintf("user id %d", uid),
+	}
+	const traditionalUnprivilegedPortStart = 1024
+	if unprivilegedPortStart != traditionalUnprivilegedPortStart {
+		errorDetails = append(errorDetails,
+			fmt.Sprintf("unprivileged start port %d", unprivilegedPortStart))
 	}
 
-	for _, allowed := range allowedPrivilegedPorts {
-		if allowed == port {
-			return nil
-		}
-	}
-	return fmt.Errorf("%w: %d", ErrPrivilegedPort, port)
+	return fmt.Errorf("%w: port %d (%s)", ErrPrivilegedPort,
+		port, strings.Join(errorDetails, ", "))
 }

@@ -28,7 +28,7 @@ Features:
   - Flag implementation `flag.New(os.Args)` in subpackage [`github.com/qdm12/gosettings/reader/sources/flag`](https://pkg.go.dev/github.com/qdm12/gosettings/reader/sources/flag)
 - Minor feature notes:
   - No use of `reflect` for better runtime safety
-  - Near zero dependency
+  - Single dependency on [kernel.org/pub/linux/libs/security/libcap/cap](https://kernel.org/pub/linux/libs/security/libcap/cap) to validate listening ports for programs with Linux capabalities
 
 ## Philosophy
 
