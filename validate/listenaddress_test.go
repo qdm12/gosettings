@@ -56,14 +56,24 @@ func Test_ListeningAddress(t *testing.T) {
 	// one privileged port in the system.
 	if unprivilegedPortStart > 1 {
 		lastPrivilegedPort := unprivilegedPortStart - 1
-		testCases["privileged_port_without_root"] = testCaseStruct{
-			address:    fmt.Sprintf("1.2.3.4:%d", lastPrivilegedPort),
-			uid:        1000,
-			errWrapped: ErrPrivilegedPort,
-			errMessage: fmt.Sprintf("listening on privileged port is not allowed: "+
-				"port %d (user id 1000, unprivileged start port %d)",
-				lastPrivilegedPort, unprivilegedPortStart),
+		hasNetBindCap, err := hasNetBindServiceCapability()
+		if err != nil {
+			t.Fatal(err)
 		}
+
+		privilegedPortWithoutRootCase := testCaseStruct{
+			address: fmt.Sprintf("1.2.3.4:%d", lastPrivilegedPort),
+			uid:     1000,
+		}
+		if !hasNetBindCap {
+			privilegedPortWithoutRootCase.errWrapped = ErrPrivilegedPort
+			privilegedPortWithoutRootCase.errMessage = fmt.Sprintf(
+				"listening on privileged port is not allowed: port %d "+
+					"(user id 1000, unprivileged start port %d)",
+				lastPrivilegedPort, unprivilegedPortStart)
+		}
+		testCases["privileged_port_without_root"] = privilegedPortWithoutRootCase
+
 		testCases["allowed_privileged_port_without_root"] = testCaseStruct{
 			address: fmt.Sprintf("1.2.3.4:%d", lastPrivilegedPort),
 			uid:     1000,
