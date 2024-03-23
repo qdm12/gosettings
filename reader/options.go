@@ -46,7 +46,17 @@ func RetroKeys(retroKeys ...string) Option {
 type settings struct {
 	forceLowercase *bool
 	acceptEmpty    *bool
+	currentKey     string
 	retroKeys      []string
+}
+
+// IsRetro indicates that all the keys given to the reader function
+// are retro-compatible keys, and that the currentKey given should
+// be used instead.
+func IsRetro(currentKey string) Option {
+	return func(s *settings) {
+		s.currentKey = currentKey
+	}
 }
 
 func (s settings) copy() settings {
@@ -54,6 +64,7 @@ func (s settings) copy() settings {
 		forceLowercase: gosettings.CopyPointer(s.forceLowercase),
 		acceptEmpty:    gosettings.CopyPointer(s.acceptEmpty),
 		retroKeys:      gosettings.CopySlice(s.retroKeys),
+		currentKey:     s.currentKey,
 	}
 }
 
@@ -75,6 +86,10 @@ func (r *Reader) makeParseOptions(options []Option) (parseOptions []parse.Option
 	}
 	if len(settings.retroKeys) > 0 {
 		parseOption := parse.RetroKeys(r.handleDeprecatedKey, settings.retroKeys...)
+		parseOptions = append(parseOptions, parseOption)
+	}
+	if settings.currentKey != "" {
+		parseOption := parse.IsRetro(r.handleDeprecatedKey, settings.currentKey)
 		parseOptions = append(parseOptions, parseOption)
 	}
 

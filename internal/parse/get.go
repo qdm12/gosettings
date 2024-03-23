@@ -56,10 +56,12 @@ func get(sources []Source, key string, options ...Option) (
 	}
 
 	if firstKeySet == "" { // All keys are unset for all sources
-		return nil, sourceKind
+		return nil, ""
 	}
 
-	if firstKeySet != key {
+	if settings.currentKey != "" { // all keys are retro-compatible keys
+		settings.handleDeprecatedKey(sourceKind, firstKeySet, settings.currentKey)
+	} else if firstKeySet != key {
 		settings.handleDeprecatedKey(sourceKind, firstKeySet, key)
 	}
 

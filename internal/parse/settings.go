@@ -10,6 +10,7 @@ type settings struct {
 	trimQuotes          *bool
 	forceLowercase      *bool
 	acceptEmpty         *bool
+	currentKey          string
 	deprecatedKeys      []string
 	handleDeprecatedKey func(source, deprecateKey, currentKey string)
 }
