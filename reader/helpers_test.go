@@ -14,3 +14,5 @@ func (t *testSource) Get(key string) (value string, isSet bool) {
 }
 
 func (t *testSource) KeyTransform(key string) string { return key }
+
+func (t *testSource) Unset(key string) { delete(t.keyValue, key) }

@@ -34,35 +34,21 @@ func get(sources []Source, key string, options ...Option) (
 	// to take the older configuration from the user first.
 	keysToTry = append(keysToTry, key)
 
-	var firstKeySet string
-
-	for _, keyToTry := range keysToTry {
-		for _, sourceToTry := range sources {
-			keyToTry = sourceToTry.KeyTransform(keyToTry)
-			stringValue, isSet := sourceToTry.Get(keyToTry)
-			if !isSet {
-				continue
-			}
-			firstKeySet = keyToTry
-			key = sourceToTry.KeyTransform(key)
-			sourceKind = sourceToTry.String()
-			value = new(string)
-			*value = stringValue
-			break
-		}
-		if firstKeySet != "" {
-			break
-		}
-	}
-
-	if firstKeySet == "" { // All keys are unset for all sources
+	firstKeySet, valueStr, sourceWhereKeyIsSet := findFirstKey(sources, keysToTry)
+	if firstKeySet == "" { // all keys are unset for all sources
 		return nil, ""
 	}
 
+	value = &valueStr
+	if settings.unset {
+		sourceWhereKeyIsSet.Unset(firstKeySet)
+	}
+	currentKey := sourceWhereKeyIsSet.KeyTransform(key)
+	sourceKind = sourceWhereKeyIsSet.String()
 	if settings.currentKey != "" { // all keys are retro-compatible keys
 		settings.handleDeprecatedKey(sourceKind, firstKeySet, settings.currentKey)
-	} else if firstKeySet != key {
-		settings.handleDeprecatedKey(sourceKind, firstKeySet, key)
+	} else if firstKeySet != currentKey {
+		settings.handleDeprecatedKey(sourceKind, firstKeySet, currentKey)
 	}
 
 	if !*settings.acceptEmpty && *value == "" {
@@ -73,6 +59,27 @@ func get(sources []Source, key string, options ...Option) (
 
 	*value = postProcessValue(*value, settings)
 	return value, sourceKind
+}
+
+func findFirstKey(sources []Source, keysToTry []string) ( //nolint:ireturn
+	firstKeySet, value string, sourceWhereKeyIsSet Source) {
+	for _, keyToTry := range keysToTry {
+		for _, sourceToTry := range sources {
+			keyToTry = sourceToTry.KeyTransform(keyToTry)
+			var isSet bool
+			value, isSet = sourceToTry.Get(keyToTry)
+			if !isSet {
+				continue
+			}
+			firstKeySet = keyToTry
+			sourceWhereKeyIsSet = sourceToTry
+			break
+		}
+		if firstKeySet != "" {
+			break
+		}
+	}
+	return firstKeySet, value, sourceWhereKeyIsSet
 }
 
 func postProcessValue(value string, settings settings) string {

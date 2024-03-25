@@ -10,4 +10,8 @@ type Source interface {
 	// the source. For example SERVER_ADDRESS becomes server-address for
 	// the flags source.
 	KeyTransform(key string) string
+	// Unset is used to clear the key given from the source.
+	// It can be a no-op if the source does not support unsetting keys,
+	// such as for flags.
+	Unset(key string)
 }

@@ -48,6 +48,7 @@ type settings struct {
 	acceptEmpty    *bool
 	currentKey     string
 	retroKeys      []string
+	unset          bool
 }
 
 // IsRetro indicates that all the keys given to the reader function
@@ -59,12 +60,23 @@ func IsRetro(currentKey string) Option {
 	}
 }
 
+// Unset can be used to clear the first key with a non empty value
+// in the first source that has it. This is useful for sensitive
+// information that can be removed after being read in the program
+// memory.
+func Unset() Option {
+	return func(s *settings) {
+		s.unset = true
+	}
+}
+
 func (s settings) copy() settings {
 	return settings{
 		forceLowercase: gosettings.CopyPointer(s.forceLowercase),
 		acceptEmpty:    gosettings.CopyPointer(s.acceptEmpty),
 		retroKeys:      gosettings.CopySlice(s.retroKeys),
 		currentKey:     s.currentKey,
+		unset:          s.unset,
 	}
 }
 
@@ -90,6 +102,10 @@ func (r *Reader) makeParseOptions(options []Option) (parseOptions []parse.Option
 	}
 	if settings.currentKey != "" {
 		parseOption := parse.IsRetro(r.handleDeprecatedKey, settings.currentKey)
+		parseOptions = append(parseOptions, parseOption)
+	}
+	if settings.unset {
+		parseOption := parse.Unset()
 		parseOptions = append(parseOptions, parseOption)
 	}
 

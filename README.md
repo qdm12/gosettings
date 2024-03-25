@@ -102,6 +102,7 @@ type Source interface {
  String() string
  Get(key string) (value string, isSet bool)
  KeyTransform(key string) string
+ Unset(key string)
 }
 ```
 

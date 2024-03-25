@@ -1,6 +1,7 @@
 package env
 
 import (
+	"os"
 	"strings"
 )
 
@@ -62,4 +63,11 @@ func (s *Source) KeyTransform(key string) (newKey string) {
 	newKey = strings.ReplaceAll(newKey, "-", "_")
 	newKey = s.keyPrefix + newKey
 	return newKey
+}
+
+// Unset removes the key from the source internal mapping
+// and unsets the environment variable.
+func (s *Source) Unset(key string) {
+	delete(s.keyToValue, key)
+	_ = os.Unsetenv(key)
 }

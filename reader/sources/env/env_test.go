@@ -139,6 +139,27 @@ func Test_Env_KeyTransform(t *testing.T) {
 	}
 }
 
+func Test_Source_Unset(t *testing.T) {
+	t.Parallel()
+
+	testKey := setTestEnv(t, "KEY", "value")
+	source := &Source{
+		keyToValue: map[string]string{
+			testKey: "value",
+		},
+	}
+	source.Unset(testKey)
+	_, ok := source.keyToValue[testKey]
+	if ok {
+		t.Errorf("expected key %s to be unset in map", testKey)
+	}
+	value := os.Getenv(testKey)
+	if value != "" {
+		t.Errorf("expected key %s to be unset in environment", testKey)
+	}
+	source.Unset(testKey)
+}
+
 // setTestEnv is used to set environment variables in
 // parallel tests, and restores or clears set variables
 // when the test finishes.

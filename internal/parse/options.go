@@ -49,3 +49,11 @@ func IsRetro(handleDeprecatedKey func(source, deprecateKey, currentKey string),
 		s.handleDeprecatedKey = handleDeprecatedKey
 	}
 }
+
+// IsRetro indicates that all the keys given are retro-compatible keys,
+// and that the currentKey given should be used instead.
+func Unset() Option {
+	return func(s *settings) {
+		s.unset = true
+	}
+}

@@ -112,3 +112,8 @@ func (f *Source) KeyTransform(key string) (newKey string) {
 	newKey = strings.ReplaceAll(newKey, " ", "-")
 	return newKey
 }
+
+// Unset removes the key from the source internal mapping.
+func (s *Source) Unset(key string) {
+	delete(s.keyToValue, key)
+}
