@@ -35,17 +35,17 @@ func get(sources []Source, key string, options ...Option) (
 	keysToTry = append(keysToTry, key)
 
 	var firstKeySet string
+	var firstSource Source
 
 	for _, keyToTry := range keysToTry {
 		for _, sourceToTry := range sources {
-			keyToTry = sourceToTry.KeyTransform(keyToTry)
-			stringValue, isSet := sourceToTry.Get(keyToTry)
+			transformedKeyToTry := sourceToTry.KeyTransform(keyToTry)
+			stringValue, isSet := sourceToTry.Get(transformedKeyToTry)
 			if !isSet {
 				continue
 			}
-			firstKeySet = keyToTry
-			key = sourceToTry.KeyTransform(key)
-			sourceKind = sourceToTry.String()
+			firstKeySet = transformedKeyToTry
+			firstSource = sourceToTry
 			value = new(string)
 			*value = stringValue
 			break
@@ -59,8 +59,11 @@ func get(sources []Source, key string, options ...Option) (
 		return nil, ""
 	}
 
+	key = firstSource.KeyTransform(key)
+	sourceKind = firstSource.String()
 	if settings.currentKey != "" { // all keys are retro-compatible keys
-		settings.handleDeprecatedKey(sourceKind, firstKeySet, settings.currentKey)
+		currentKey := firstSource.KeyTransform(settings.currentKey)
+		settings.handleDeprecatedKey(sourceKind, firstKeySet, currentKey)
 	} else if firstKeySet != key {
 		settings.handleDeprecatedKey(sourceKind, firstKeySet, key)
 	}
