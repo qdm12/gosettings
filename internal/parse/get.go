@@ -41,7 +41,7 @@ func get(sources []Source, key string, options ...Option) (
 		for _, sourceToTry := range sources {
 			transformedKeyToTry := sourceToTry.KeyTransform(keyToTry)
 			stringValue, isSet := sourceToTry.Get(transformedKeyToTry)
-			if !isSet {
+			if !isSet || (!*settings.acceptEmpty && stringValue == "") {
 				continue
 			}
 			firstKeySet = transformedKeyToTry
@@ -66,12 +66,6 @@ func get(sources []Source, key string, options ...Option) (
 		settings.handleDeprecatedKey(sourceKind, firstKeySet, currentKey)
 	} else if firstKeySet != key {
 		settings.handleDeprecatedKey(sourceKind, firstKeySet, key)
-	}
-
-	if !*settings.acceptEmpty && *value == "" {
-		// value is set to the empty string, but the empty
-		// string is not accepted so return nil.
-		return nil, sourceKind
 	}
 
 	*value = postProcessValue(*value, settings)
