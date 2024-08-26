@@ -31,7 +31,7 @@ func Test_New(t *testing.T) {
 	expectedReader := &Reader{
 		sources: []parse.Source{testSourceA, testSourceB},
 		defaultReadSettings: settings{
-			forceLowercase: ptrTo(false),
+			forceLowercase: ptrTo(true),
 			acceptEmpty:    ptrTo(false),
 		},
 	}

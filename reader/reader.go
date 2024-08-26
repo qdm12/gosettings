@@ -48,7 +48,7 @@ type Settings struct {
 	// key, and defaults to a no-op function.
 	HandleDeprecatedKey func(source, deprecatedKey, currentKey string)
 	// DefaultOptions are the default options to use for every method call.
-	// They default to ForceLowercase(false), AcceptEmpty(false).
+	// They default to ForceLowercase(true), AcceptEmpty(false).
 	DefaultOptions []Option
 }
 
@@ -60,5 +60,5 @@ func (s *Settings) setDefaults() {
 		s.HandleDeprecatedKey = func(source, deprecatedKey, currentKey string) {}
 	}
 	s.DefaultOptions = gosettings.DefaultSlice(s.DefaultOptions,
-		[]Option{ForceLowercase(false), AcceptEmpty(false)})
+		[]Option{ForceLowercase(true), AcceptEmpty(false)})
 }
