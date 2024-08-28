@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -20,7 +21,7 @@ func getUnprivilegedPortStart() (startPort uint16, err error) {
 	buffer := make([]byte, maxFileSize)
 	file, err := os.Open(filepath)
 	if err != nil {
-		if os.IsNotExist(err) {
+		if os.IsNotExist(err) || errors.Is(err, os.ErrPermission) {
 			const defaultUnprivilegedPortStart = 1024
 			return defaultUnprivilegedPortStart, nil
 		}
