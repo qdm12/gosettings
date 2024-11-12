@@ -190,14 +190,14 @@ func Test_postProcessValue(t *testing.T) {
 			result: "value",
 		},
 		"combined": {
-			value: "\t\"'Value\"'\t\n\t\r\n\t",
+			value: "\t\"'Value 'hello'\"'\t\n\t\r\n\t",
 			settings: settings{
 				trimLineEndings: ptrTo(true),
 				trimSpace:       ptrTo(true),
 				trimQuotes:      ptrTo(true),
 				forceLowercase:  ptrTo(true),
 			},
-			result: "value",
+			result: "value 'hello'",
 		},
 	}
 

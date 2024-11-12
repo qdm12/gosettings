@@ -1,6 +1,9 @@
 package parse
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 // Get returns the first value found at the given key from
 // the given sources in order, as a string pointer.
@@ -91,15 +94,23 @@ func postProcessValue(value string, settings settings) string {
 		cutSet["\n"] = struct{}{}
 	}
 
-	if *settings.trimQuotes {
-		cutSet[`"`] = struct{}{}
-		cutSet[`'`] = struct{}{}
-	}
-
 	cutSetString := ""
 	for s := range cutSet {
 		cutSetString += s
 	}
 
-	return strings.Trim(value, cutSetString)
+	quotes := []rune{'\'', '"', '`'}
+	for {
+		value = strings.Trim(value, cutSetString)
+		const minCharactersForQuotes = 2
+		if *settings.trimQuotes &&
+			len(value) >= minCharactersForQuotes &&
+			slices.Contains(quotes, rune(value[0])) &&
+			slices.Contains(quotes, rune(value[len(value)-1])) {
+			value = value[1 : len(value)-1] // remove quotes
+			continue                        // re-trim cut set
+		}
+		break
+	}
+	return value
 }
